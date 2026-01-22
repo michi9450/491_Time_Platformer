@@ -30,6 +30,15 @@ class Player {
         // Dash
         this.canDash = true;
         this.dashTime = 0;
+
+        //bounding box
+        this.updateBB();
+    }
+
+    updateBB(){
+        this.lastBB = this.BB;
+        this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
+        console.log(this.BB.left);
     }
 
     update() {
@@ -125,9 +134,15 @@ class Player {
 
         // update position
         this.x += this.velocity.x * TICK;
+        this.updateBB();
+        this.handleHorizontalCollision();
+
         this.y += this.velocity.y * TICK;
+        this.updateBB();
+        this.HandleVerticleCollision();
 
         //Collision and ground stuff
+        
         // if (this.y + this.height >= GROUND_Y) {
         //     this.y = GROUND_Y - this.height;
         //     this.velocity.y = 0;
@@ -142,6 +157,56 @@ class Player {
         if (!this.onGround) this.state = "jump";
         else if (Math.abs(this.velocity.x) > 10) this.state = "run";
         else this.state = "idle";
+    }
+
+    handleHorizontalCollision(){
+        //console.log("hoirzontal");
+        const that = this;
+        this.game.entities.forEach(function (entity) {
+            //console.log(entity.BB.left);
+            if(entity.BB && that.BB.collide(entity.BB)){
+                if(entity instanceof invisible_collision && entity.type){
+                    let overlap = that.BB.overlap(entity.BB);
+                    if(that.BB.collide(entity.BB.left) && that.lastBB.right <= entity.BB.left) {
+                        that.x = entity.BB.left - PARAMS.BLOCKWIDTH;
+                        if (that.velocity.x > 0) that.velocity.x = 0;
+                    }
+                } else if(that.BB.collide(entity.BB.right) && that.lastBB.left >= entity.BB.right) {
+                        that.x = entity.BB.right;
+                        if (that.velocity.x < 0) that.velocity.x = 0;
+                    }
+            }
+        })
+    }
+
+    HandleVerticleCollision(){
+        const that = this;
+        //console.log("verticle");
+        this.game.entities.forEach(function (entity) {
+            if(entity.BB && that.BB.collide(entity.BB)){
+
+            }
+            //if statesments for all collision cases
+            if(that.velocity.y > 0){//falling cases
+                if(entity.BB && that.BB.collide(entity.BB)){
+                if(entity instanceof invisible_collision && entity.type
+                    && (that.lastBB.bottom) <= entity.BB.top){//landing
+                        console.log("it is doing the thing");
+                    that.y = entity.BB.top - PARAMS.BLOCKWIDTH;
+                    that.velocity.y = 0;
+                    }
+                }
+            }
+            if(that.velocity.y < 0){//jumping cases
+                if(entity.BB && that.BB.collide(entity.BB)){
+                if(entity instanceof invisible_collision && entity.type
+                    && (that.lastBB.top) >= entity.BB.bottom){//ceiling
+                    that.y = entity.BB.bottom;
+                    that.velocity.y = 0;
+                    }
+                }
+            }
+        })
     }
 
     draw(ctx) {
