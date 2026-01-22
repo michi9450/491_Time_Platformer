@@ -26,6 +26,7 @@ class Player {
         this.coyoteTime = 0;
         this.jumpBuffer = 0;
         this.hasDoubleJump = true;
+        this.wasJumpPressed = false;
 
         // Dash
         this.canDash = true;
@@ -45,40 +46,54 @@ class Player {
         const TICK = this.game.clockTick;
 
         //constants
-        const GRAVITY = 2000;
-        const MAX_FALL = 1500;
+        //acceleration downwards
+        const GRAVITY = 1500;
+        //maximum fall speed
+        const MAX_FALL = 1750;
 
         const RUN_ACCEL = 3000;
         const RUN_DECEL = 2500;
         const MAX_RUN = 400;
 
+        //initial jumping speed
         const JUMP_SPEED = 650;
+        //Multiplier that allows for shorter hops, and varying jump height based on input
         const JUMP_CUT_MULT = 0.4;
 
+        //JUMP FORGIVENESS
+        //max time (seconds) a player can still jump after leaving the ground
         const COYOTE_TIME_MAX = 0.1;
+        //time (seconds) a jump input is remembered before landing
+        //allows jumping before touching the ground
         const JUMP_BUFFER_MAX = 0.1;
 
+        //horizontal dash speed movement
         const DASH_SPEED = 900;
+        //how long the dash lasts in (seconds)
         const DASH_DURATION = 0.15;
 
         const GROUND_Y = 600; // adjust
 
         //input keys
-        const left = this.game.keys["a"];
-        const right = this.game.keys["d"];
-        const jumpPressed = this.game.keys[" "];
-        const dashPressed = this.game.keys["Shift"];
+        const left = this.game.keys["KeyA"];
+        const right = this.game.keys["KeyD"];
+        const jumpPressed = this.game.keys["Space"];
+        const dashPressed = this.game.keys["ShiftLeft"];
 
         //timers
         this.coyoteTime -= TICK;
         this.jumpBuffer -= TICK;
 
         // Dash
-        if (dashPressed && this.canDash) {
+        const dashJustPressed = dashPressed && !this.wasDashPressed;
+        this.wasDashPressed = dashPressed;
+        if (dashJustPressed && this.canDash) {
             this.canDash = false;
             this.dashTime = DASH_DURATION;
             this.velocity.y = 0;
-            this.velocity.x = this.facing === "right" ? DASH_SPEED : -DASH_SPEED;
+            if (this.facing === "right") {
+                this.velocity.x = DASH_SPEED;
+            } else this.velocity.x = -DASH_SPEED;
         }
 
         if (this.dashTime > 0) {
@@ -87,13 +102,21 @@ class Player {
         } else {
 
             // horizontal
-            if (left) {
+            if (left && right && this.onGround) { //both clicked and on the floor
+                if (this.velocity.x > 0) {
+                    this.velocity.x -= RUN_DECEL * TICK;
+                    if (this.velocity.x < 0) this.velocity.x = 0;
+                } else if (this.velocity.x < 0) {
+                    this.velocity.x += RUN_DECEL * TICK;
+                    if (this.velocity.x > 0) this.velocity.x = 0;
+                }
+            } else if (left) {
                 this.velocity.x -= RUN_ACCEL * TICK;
                 this.facing = "left";
             } else if (right) {
                 this.velocity.x += RUN_ACCEL * TICK;
                 this.facing = "right";
-            } else {
+            } else { // none clicked
                 if (this.velocity.x > 0) {
                     this.velocity.x -= RUN_DECEL * TICK;
                     if (this.velocity.x < 0) this.velocity.x = 0;
@@ -106,7 +129,9 @@ class Player {
             this.velocity.x = Math.max(-MAX_RUN, Math.min(MAX_RUN, this.velocity.x));
 
             // jump
-            if (jumpPressed) {
+            const jumpJustPressed = jumpPressed && !this.wasJumpPressed;
+            this.wasJumpPressed = jumpPressed;
+            if (jumpJustPressed) {
                 this.jumpBuffer = JUMP_BUFFER_MAX;
             }
 
