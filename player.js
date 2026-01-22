@@ -37,7 +37,7 @@ class Player {
 
     updateBB(){
         this.lastBB = this.BB;
-        this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
+        this.BB = new BoundingBox(this.x, this.y, this.width*4, this.height*4);
         //console.log(this.BB.bottom);
     }
 
@@ -61,7 +61,7 @@ class Player {
         const DASH_SPEED = 900;
         const DASH_DURATION = 0.15;
 
-        const GROUND_Y = 500; // adjust
+        const GROUND_Y = 600; // adjust
 
         //input keys
         const left = this.game.keys["a"];
@@ -168,13 +168,16 @@ class Player {
                 if(entity instanceof invisible_collision && entity.type){
                     let overlap = that.BB.overlap(entity.BB);
                     if(that.BB.collide(entity.BB) && that.lastBB.right <= entity.BB.left) {
+                        console.log("it is doing the thing");
                         that.x = entity.BB.left - PARAMS.BLOCKWIDTH;
                         if (that.velocity.x > 0) that.velocity.x = 0;
                     }
-                } else if(that.BB.collide(entity.BB) && that.lastBB.left >= entity.BB.right) {
+                 else if(that.BB.collide(entity.BB) && that.lastBB.left >= entity.BB.right) {
+                    console.log("it is doing the thing 2");
                         that.x = entity.BB.right;
                         if (that.velocity.x < 0) that.velocity.x = 0;
                     }
+                }
             }
         })
     }
@@ -183,9 +186,6 @@ class Player {
         const that = this;
         //console.log("verticle");
         this.game.entities.forEach(function (entity) {
-            if(entity.BB && that.BB.collide(entity.BB)){
-
-            }
             //if statesments for all collision cases
             if(that.velocity.y > 0){//falling cases
                 if(entity.BB && that.BB.collide(entity.BB)){
@@ -211,5 +211,6 @@ class Player {
 
     draw(ctx) {
         this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
     }
 }
