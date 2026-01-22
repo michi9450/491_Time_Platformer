@@ -14,7 +14,7 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.addEntity(new Player(gameEngine, 0, 400));
 
 	//demo for collision
-	gameEngine.addEntity(new invisible_collision(gameEngine, 0, 500, 1000, 10));
+	gameEngine.addEntity(new invisible_collision(gameEngine, 0, 600, 500, 100));
 	gameEngine.addEntity(new invisible_collision(gameEngine, 400, 550, 200, 200));
 	gameEngine.start();
 });
