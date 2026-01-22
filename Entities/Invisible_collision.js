@@ -9,6 +9,7 @@ class invisible_collision{
     }
 
     draw(ctx) {
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        this.BB.draw(ctx);
     }
 }

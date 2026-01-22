@@ -132,6 +132,17 @@ class Player {
             this.velocity.y = Math.min(this.velocity.y, MAX_FALL);
         }
 
+    // if (this.y + this.height >= GROUND_Y) {
+    //         this.y = GROUND_Y - this.height;
+    //         this.velocity.y = 0;
+    //         this.onGround = true;
+    //         this.coyoteTime = COYOTE_TIME_MAX;
+    //         this.hasDoubleJump = true;
+    //         this.canDash = true;
+    //     } else {
+    //         this.onGround = false;
+    //     }
+
         // update position
         this.x += this.velocity.x * TICK;
         this.updateBB();
@@ -139,20 +150,39 @@ class Player {
 
         this.y += this.velocity.y * TICK;
         this.updateBB();
-        this.HandleVerticleCollision();
+            const that = this;
+        //console.log("verticle");
+        this.game.entities.forEach(function (entity) {
+            //if statesments for all collision cases
+            if(that.velocity.y > 0){//falling cases
+                if(entity.BB && that.BB.collide(entity.BB)){
+                if(entity instanceof invisible_collision
+                    && (that.lastBB.bottom) <= entity.BB.top){//landing
+                        //console.log("it is doing the thing");
+                    that.y = entity.BB.top - that.height*4;
+                    that.velocity.y = 0;
+                    that.onGround = true;
+                    that.canDash = true;
+                    that.hasDoubleJump = true;
+                    that.coyoteTime = COYOTE_TIME_MAX;
+                    }
+                }
+            }
+            if(that.velocity.y < 0){//jumping cases
+                if(entity.BB && that.BB.collide(entity.BB)){
+                if(entity instanceof invisible_collision 
+                    && (that.lastBB.top) >= entity.BB.bottom){//ceiling
+                    that.y = entity.BB.bottom;
+                    that.velocity.y = 0;
+                    }
+                }
+            }
+        })
+        //this.HandleVerticleCollision();
 
         //Collision and ground stuff
         
-        if (this.y + this.height >= GROUND_Y) {
-            this.y = GROUND_Y - this.height;
-            this.velocity.y = 0;
-            this.onGround = true;
-            this.coyoteTime = COYOTE_TIME_MAX;
-            this.hasDoubleJump = true;
-            this.canDash = true;
-        } else {
-            this.onGround = false;
-        }
+        
 
         if (!this.onGround) this.state = "jump";
         else if (Math.abs(this.velocity.x) > 10) this.state = "run";
@@ -163,17 +193,17 @@ class Player {
         //console.log("hoirzontal");
         const that = this;
         this.game.entities.forEach(function (entity) {
-            //console.log(entity.BB.right);
+            //console.log(that.BB.collide(entity.BB));
             if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision && entity.type){
+                if(entity instanceof invisible_collision ){
                     let overlap = that.BB.overlap(entity.BB);
                     if(that.BB.collide(entity.BB) && that.lastBB.right <= entity.BB.left) {
-                        console.log("it is doing the thing");
-                        that.x = entity.BB.left - PARAMS.BLOCKWIDTH;
+                        //console.log("it is doing the thing");
+                        that.x = entity.BB.left - that.width*4;
                         if (that.velocity.x > 0) that.velocity.x = 0;
                     }
                  else if(that.BB.collide(entity.BB) && that.lastBB.left >= entity.BB.right) {
-                    console.log("it is doing the thing 2");
+                    //console.log("it is doing the thing 2");
                         that.x = entity.BB.right;
                         if (that.velocity.x < 0) that.velocity.x = 0;
                     }
@@ -189,17 +219,18 @@ class Player {
             //if statesments for all collision cases
             if(that.velocity.y > 0){//falling cases
                 if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision && entity.type
+                if(entity instanceof invisible_collision
                     && (that.lastBB.bottom) <= entity.BB.top){//landing
-                        console.log("it is doing the thing");
-                    that.y = entity.BB.top - PARAMS.BLOCKWIDTH;
+                        //console.log("it is doing the thing");
+                    that.y = entity.BB.top - that.height*4;
                     that.velocity.y = 0;
+                    this.onGround = true;
                     }
                 }
             }
             if(that.velocity.y < 0){//jumping cases
                 if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision && entity.type
+                if(entity instanceof invisible_collision 
                     && (that.lastBB.top) >= entity.BB.bottom){//ceiling
                     that.y = entity.BB.bottom;
                     that.velocity.y = 0;
@@ -211,6 +242,7 @@ class Player {
 
     draw(ctx) {
         this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
+        // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
+        this.BB.draw(ctx);
     }
 }
