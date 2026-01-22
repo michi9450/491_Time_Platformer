@@ -38,7 +38,7 @@ class Player {
     updateBB(){
         this.lastBB = this.BB;
         this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
-        console.log(this.BB.left);
+        //console.log(this.BB.bottom);
     }
 
     update() {
@@ -143,16 +143,16 @@ class Player {
 
         //Collision and ground stuff
         
-        // if (this.y + this.height >= GROUND_Y) {
-        //     this.y = GROUND_Y - this.height;
-        //     this.velocity.y = 0;
-        //     this.onGround = true;
-        //     this.coyoteTime = COYOTE_TIME_MAX;
-        //     this.hasDoubleJump = true;
-        //     this.canDash = true;
-        // } else {
-        //     this.onGround = false;
-        // }
+        if (this.y + this.height >= GROUND_Y) {
+            this.y = GROUND_Y - this.height;
+            this.velocity.y = 0;
+            this.onGround = true;
+            this.coyoteTime = COYOTE_TIME_MAX;
+            this.hasDoubleJump = true;
+            this.canDash = true;
+        } else {
+            this.onGround = false;
+        }
 
         if (!this.onGround) this.state = "jump";
         else if (Math.abs(this.velocity.x) > 10) this.state = "run";
@@ -163,15 +163,15 @@ class Player {
         //console.log("hoirzontal");
         const that = this;
         this.game.entities.forEach(function (entity) {
-            //console.log(entity.BB.left);
+            //console.log(entity.BB.right);
             if(entity.BB && that.BB.collide(entity.BB)){
                 if(entity instanceof invisible_collision && entity.type){
                     let overlap = that.BB.overlap(entity.BB);
-                    if(that.BB.collide(entity.BB.left) && that.lastBB.right <= entity.BB.left) {
+                    if(that.BB.collide(entity.BB) && that.lastBB.right <= entity.BB.left) {
                         that.x = entity.BB.left - PARAMS.BLOCKWIDTH;
                         if (that.velocity.x > 0) that.velocity.x = 0;
                     }
-                } else if(that.BB.collide(entity.BB.right) && that.lastBB.left >= entity.BB.right) {
+                } else if(that.BB.collide(entity.BB) && that.lastBB.left >= entity.BB.right) {
                         that.x = entity.BB.right;
                         if (that.velocity.x < 0) that.velocity.x = 0;
                     }
