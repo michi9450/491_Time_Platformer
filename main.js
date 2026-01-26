@@ -11,11 +11,20 @@ ASSET_MANAGER.downloadAll(() => {
 	PARAMS.BLOCKWIDTH = PARAMS.BITWIDTH * PARAMS.SCALE;
 
 	gameEngine.init(ctx);
-	gameEngine.addEntity(new Player(gameEngine, 0, 400));
+	this.Player = new Player(gameEngine, 0, 400)
+	gameEngine.addEntityPast(this.Player);
+	gameEngine.addEntityPresent(this.Player);
 
 	//demo for collision
-	gameEngine.addEntity(new invisible_collision(gameEngine, 0, 600, 500, 100));
-	gameEngine.addEntity(new invisible_collision(gameEngine, 400, 550, 200, 200));
-	gameEngine.addEntity(new invisible_collision(gameEngine, -20, 0, 20, 550));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, 0, 600, 500, 100));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, 400, 550, 200, 200));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, -20, 0, 20, 550));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, 800, 0, 20, 550));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, 1000, 600, 200, 200))
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine,  0, 600, 500, 100))
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 400, 550, 200, 200))
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine, -20, 0, 20, 550))
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 1000, 0, 20, 550));
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 1000, 600, 200, 200))
 	gameEngine.start();
 });

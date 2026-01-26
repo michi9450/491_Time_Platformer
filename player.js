@@ -32,6 +32,10 @@ class Player {
         this.canDash = true;
         this.dashTime = 0;
 
+        // Time Jump
+        this.canTimeJump = true;
+        this.timeJumpTimer = 0;
+
         //bounding box
         this.updateBB();
     }
@@ -44,6 +48,9 @@ class Player {
 
     update() {
         const TICK = this.game.clockTick;
+
+        //retrieve current entity list
+        //this.currentlist = game.getEntityList();
 
         //constants
         //acceleration downwards
@@ -72,17 +79,23 @@ class Player {
         //how long the dash lasts in (seconds)
         const DASH_DURATION = 0.15;
 
-        const GROUND_Y = 600; // adjust
+        //how long the time animation lasts in (seconds)
+        const TIME_JUMP_DURATION = .2;
 
         //input keys
         const left = this.game.keys["KeyA"];
         const right = this.game.keys["KeyD"];
         const jumpPressed = this.game.keys["Space"];
         const dashPressed = this.game.keys["ShiftLeft"];
+        const timejumpPressed = this.game.keys["KeyC"];
 
         //timers
         this.coyoteTime -= TICK;
         this.jumpBuffer -= TICK;
+        if(!this.canTimeJump) {
+            if(this.timeJumpTimer > 0) this.timeJumpTimer -= TICK;
+            else this.canTimeJump = true;
+        }
 
         // Dash
         const dashJustPressed = dashPressed && !this.wasDashPressed;
@@ -178,7 +191,7 @@ class Player {
         this.updateBB();
             const that = this;
         //console.log("verticle");
-        this.game.entities.forEach(function (entity) {
+        this.game.getEntityList().forEach(function (entity) {
             //if statesments for all collision cases
             if(that.velocity.y > 0){//falling cases
                 if(entity.BB && that.BB.collide(entity.BB)){
@@ -204,10 +217,15 @@ class Player {
                 }
             }
         })
-        //this.HandleVerticleCollision();
-
-        //Collision and ground stuff
         
+        //Time skip mechanic
+        const timejumpJustPressed = timejumpPressed && !this.wastimejumpPressed;
+        this.wastimejumpPressed = timejumpPressed;
+        if(timejumpPressed && this.canTimeJump){
+            this.canTimeJump = false;
+            this.game.changeTime();
+            this.timeJumpTimer = TIME_JUMP_DURATION;
+        }
         
 
         if (!this.onGround) this.state = "jump";
@@ -218,7 +236,7 @@ class Player {
     handleHorizontalCollision(){
         //console.log("hoirzontal");
         const that = this;
-        this.game.entities.forEach(function (entity) {
+        this.game.getEntityList().forEach(function (entity) {
             //console.log(that.BB.collide(entity.BB));
             if(entity.BB && that.BB.collide(entity.BB)){
                 if(entity instanceof invisible_collision ){
@@ -238,33 +256,6 @@ class Player {
         })
     }
 
-    HandleVerticleCollision(){
-        const that = this;
-        //console.log("verticle");
-        this.game.entities.forEach(function (entity) {
-            //if statesments for all collision cases
-            if(that.velocity.y > 0){//falling cases
-                if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision
-                    && (that.lastBB.bottom) <= entity.BB.top){//landing
-                        //console.log("it is doing the thing");
-                    that.y = entity.BB.top - that.height*4;
-                    that.velocity.y = 0;
-                    this.onGround = true;
-                    }
-                }
-            }
-            if(that.velocity.y < 0){//jumping cases
-                if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision 
-                    && (that.lastBB.top) >= entity.BB.bottom){//ceiling
-                    that.y = entity.BB.bottom;
-                    that.velocity.y = 0;
-                    }
-                }
-            }
-        })
-    }
 
     draw(ctx) {
         this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y);
