@@ -155,6 +155,7 @@ class Player {
             //Gravity
             this.velocity.y += GRAVITY * TICK;
             this.velocity.y = Math.min(this.velocity.y, MAX_FALL);
+            if(this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
         }
 
     // if (this.y + this.height >= GROUND_Y) {
