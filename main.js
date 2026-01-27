@@ -2,6 +2,8 @@ const gameEngine = new GameEngine();
 
 const ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload("sprites/temp.png");
+ASSET_MANAGER.queueDownload("sprites/SawBladeSuriken.png");
+ASSET_MANAGER.queueDownload("sprites/Trap_Spike.png");
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
@@ -42,6 +44,17 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 450, 400, 100, 20, 1.0));
 	gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 700, 750, 100, 20, 1.0));
 	gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 860, 620, 100, 20, 1.0));
+
+	// Demo hazards - Spikes (static)
+	const spike1 = new Spike(gameEngine, 200, 561, 80, 20);
+	gameEngine.addEntityPast(spike1);
+	gameEngine.addEntityPresent(spike1);
+
+	// Demo hazards - Saw Blade (moving)
+	// This saw blade moves horizontally 200 pixels at speed 150
+	const sawBlade1 = new SawBlade(gameEngine, 600, 500, 50, 150, 150, "horizontal");
+	gameEngine.addEntityPast(sawBlade1);
+	gameEngine.addEntityPresent(sawBlade1);
 
 	gameEngine.start();
 });
