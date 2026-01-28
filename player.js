@@ -2,6 +2,10 @@ class Player {
     constructor(game, x, y) {
         Object.assign(this, { game, x, y });
 
+        // Store spawn position for respawning
+        this.spawnX = x;
+        this.spawnY = y;
+
         this.width = 20;
         this.height = 26;
 
@@ -21,6 +25,10 @@ class Player {
         this.facing = "right";
         this.state = "idle";
         this.dead = false;
+
+        // Death animation state
+        this.deathTimer = 0;
+        this.deathAnimationDuration = 2.0; // seconds for full death animation
 
         // Jump helpers
         this.coyoteTime = 0;
@@ -48,6 +56,12 @@ class Player {
 
     update() {
         const TICK = this.game.clockTick;
+
+        // Handle death animation state
+        if (this.dead) {
+            this.updateDeathAnimation(TICK);
+            return; // Skip normal update while dead
+        }
 
         //retrieve current entity list
         //this.currentlist = game.getEntityList();
@@ -226,11 +240,78 @@ class Player {
             this.game.changeTime();
             this.timeJumpTimer = TIME_JUMP_DURATION;
         }
-        
+
+        // Check for hazard collisions
+        this.checkHazardCollision();
+
+        // Check if player fell off the map (below screen)
+        if (this.y > 1000) {
+            this.respawn();
+        }
 
         if (!this.onGround) this.state = "jump";
         else if (Math.abs(this.velocity.x) > 10) this.state = "run";
         else this.state = "idle";
+    }
+
+    // Check collision with hazards (spikes, saw blades, etc.)
+    checkHazardCollision() {
+        const that = this;
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity.isHazard && entity.BB && that.BB.collide(entity.BB)) {
+                that.die();
+            }
+        });
+    }
+
+    // Trigger death state - Mario style pop up then fall
+    die() {
+        if (this.dead) return; // Already dead, don't trigger again
+
+        this.dead = true;
+        this.state = "dead";
+        this.deathTimer = 0;
+
+        // Mario-style death: pop up first
+        this.velocity.y = -500; // Pop up
+        this.velocity.x = 0;    // Stop horizontal movement
+    }
+
+    // Update death animation
+    updateDeathAnimation(TICK) {
+        const DEATH_GRAVITY = 1200;
+        const MAX_FALL = 1750;
+
+        this.deathTimer += TICK;
+
+        // Apply gravity during death animation
+        this.velocity.y += DEATH_GRAVITY * TICK;
+        this.velocity.y = Math.min(this.velocity.y, MAX_FALL);
+
+        // Update position (only vertical, no horizontal movement)
+        this.y += this.velocity.y * TICK;
+        this.updateBB();
+
+        // Respawn after animation completes or player falls off screen
+        if (this.deathTimer >= this.deathAnimationDuration || this.y > 1000) {
+            this.respawn();
+        }
+    }
+
+    // Respawn player at spawn point
+    respawn() {
+        this.x = this.spawnX;
+        this.y = this.spawnY;
+        this.velocity = { x: 0, y: 0 };
+        this.dead = false;
+        this.state = "idle";
+        this.deathTimer = 0;
+        this.onGround = false;
+        this.hasDoubleJump = true;
+        this.canDash = true;
+        this.coyoteTime = 0;
+        this.jumpBuffer = 0;
+        this.updateBB();
     }
 
     handleHorizontalCollision(){
