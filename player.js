@@ -327,6 +327,13 @@ class Player {
         this.hasDoubleJump = true;
         this.canDash = true;
         this.coyoteTime = 0;
+
+        // Reset all falling platforms
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof FallingPlatform) {
+                entity.reset();
+            }
+        });
         this.jumpBuffer = 0;
         this.updateBB();
     }

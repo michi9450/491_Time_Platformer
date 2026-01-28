@@ -28,6 +28,18 @@ class FallingPlatform {
         }
     }
 
+    reset() {
+        // Reset platform to initial state
+        this.x = this.initialX;
+        this.y = this.initialY;
+        this.activated = false;
+        this.falling = false;
+        this.fallTimer = 0;
+        this.velocity = { x: 0, y: 0 };
+        this.removeFromWorld = false;
+        this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
+    }
+
     update() {
         const TICK = this.game.clockTick;
 
@@ -50,9 +62,10 @@ class FallingPlatform {
 
             this.y += this.velocity.y * TICK;
 
-            // Remove platform if it falls too far (off screen)
-            if (this.y > 1200) { // Assuming screen height + buffer
-                this.removeFromWorld = true;
+            // Stop updating once far off screen (don't remove, we'll reset it on respawn)
+            if (this.y > 1200) {
+                this.y = 2000; // Move way off screen
+                this.velocity.y = 0; // Stop falling
             }
         }
 
@@ -61,6 +74,9 @@ class FallingPlatform {
     }
 
     draw(ctx) {
+        // Don't draw if way off screen
+        if (this.y > 1500) return;
+
         // Visual feedback based on state
         let baseColor, highlightColor;
 
