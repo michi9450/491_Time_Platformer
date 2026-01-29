@@ -29,14 +29,28 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 1000, 0, 20, 550));
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 1000, 600, 200, 200))
 
+	// Test platforms - Past timeline
+	// Moving platform (horizontal) - moves left and right
+	gameEngine.addEntityPast(new MovingPlatform(gameEngine, 600, 450, 350, 450, 120, 25, 70));
+	// Falling platforms - spread out
+	gameEngine.addEntityPast(new FallingPlatform(gameEngine, 250, 500, 100, 20, 1.0));
+	gameEngine.addEntityPast(new FallingPlatform(gameEngine, 700, 760, 100, 20, 1.0));
+	gameEngine.addEntityPast(new FallingPlatform(gameEngine, 870, 700, 100, 20, 1.0));
+
+	// Test platforms - Present timeline
+	// Moving platform (vertical) - moves up and down
+	gameEngine.addEntityPresent(new MovingPlatform(gameEngine, 170, 300, 170, 500, 120, 25, 70));
+	// Falling platforms - different positions
+	gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 450, 400, 100, 20, 1.0));
+	gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 700, 750, 100, 20, 1.0));
+	gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 860, 620, 100, 20, 1.0));
+
 	// Demo hazards - Spikes (static)
-	// Spike(game, x, y, width, height)
 	const spike1 = new Spike(gameEngine, 200, 561, 80, 20);
 	gameEngine.addEntityPast(spike1);
 	gameEngine.addEntityPresent(spike1);
 
 	// Demo hazards - Saw Blade (moving)
-	// SawBlade(game, x, y, size, pathLength, speed, direction)
 	// This saw blade moves horizontally 200 pixels at speed 150
 	const sawBlade1 = new SawBlade(gameEngine, 600, 500, 50, 150, 150, "horizontal");
 	gameEngine.addEntityPast(sawBlade1);

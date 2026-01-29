@@ -209,8 +209,11 @@ class Player {
             //if statesments for all collision cases
             if(that.velocity.y > 0){//falling cases
                 if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision
-                    && (that.lastBB.bottom) <= entity.BB.top){//landing
+                // Check for all platform types
+                if((entity instanceof invisible_collision ||
+                    entity instanceof MovingPlatform ||
+                    entity instanceof FallingPlatform)
+                    && (that.lastBB.bottom) <= entity.BB.top + 10){//landing - added tolerance for moving platforms
                         //console.log("it is doing the thing");
                     that.y = entity.BB.top - that.height*4;
                     that.velocity.y = 0;
@@ -218,13 +221,27 @@ class Player {
                     that.canDash = true;
                     that.hasDoubleJump = true;
                     that.coyoteTime = COYOTE_TIME_MAX;
+
+                    // Activate falling platform when player lands on it
+                    if(entity instanceof FallingPlatform) {
+                        entity.activate();
+                    }
+
+                    // Move with moving platform (both X and Y)
+                    if(entity instanceof MovingPlatform && entity.lastX !== undefined) {
+                        that.x += (entity.x - entity.lastX);
+                        that.y += (entity.y - entity.lastY);
+                    }
                     }
                 }
             }
             if(that.velocity.y < 0){//jumping cases
                 if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision 
-                    && (that.lastBB.top) >= entity.BB.bottom){//ceiling
+                // Check for all platform types
+                if((entity instanceof invisible_collision ||
+                    entity instanceof MovingPlatform ||
+                    entity instanceof FallingPlatform)
+                    && (that.lastBB.top) >= entity.BB.bottom - 10){//ceiling - added tolerance
                     that.y = entity.BB.bottom;
                     that.velocity.y = 0;
                     }
@@ -310,6 +327,13 @@ class Player {
         this.hasDoubleJump = true;
         this.canDash = true;
         this.coyoteTime = 0;
+
+        // Reset all falling platforms
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof FallingPlatform) {
+                entity.reset();
+            }
+        });
         this.jumpBuffer = 0;
         this.updateBB();
     }
@@ -320,17 +344,25 @@ class Player {
         this.game.getEntityList().forEach(function (entity) {
             //console.log(that.BB.collide(entity.BB));
             if(entity.BB && that.BB.collide(entity.BB)){
-                if(entity instanceof invisible_collision ){
+                // Check for all platform types
+                if(entity instanceof invisible_collision ||
+                   entity instanceof MovingPlatform ||
+                   entity instanceof FallingPlatform){
                     let overlap = that.BB.overlap(entity.BB);
-                    if(that.BB.collide(entity.BB) && that.lastBB.right <= entity.BB.left) {
+
+                    // Determine collision side based on where player was coming from
+                    const fromLeft = that.lastBB.right <= entity.BB.left + 5;
+                    const fromRight = that.lastBB.left >= entity.BB.right - 5;
+
+                    if(fromLeft && that.velocity.x > 0) {
                         //console.log("it is doing the thing");
                         that.x = entity.BB.left - that.width*4;
-                        if (that.velocity.x > 0) that.velocity.x = 0;
+                        that.velocity.x = 0;
                     }
-                 else if(that.BB.collide(entity.BB) && that.lastBB.left >= entity.BB.right) {
-                    //console.log("it is doing the thing 2");
+                    else if(fromRight && that.velocity.x < 0) {
+                        //console.log("it is doing the thing 2");
                         that.x = entity.BB.right;
-                        if (that.velocity.x < 0) that.velocity.x = 0;
+                        that.velocity.x = 0;
                     }
                 }
             }
