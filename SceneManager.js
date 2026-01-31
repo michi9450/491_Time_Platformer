@@ -26,5 +26,4 @@ class SceneManager {
     LoadScreen(level, screen, x, y){
         
     }
-
 }

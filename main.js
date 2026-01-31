@@ -1,9 +1,20 @@
 const gameEngine = new GameEngine();
 
 const ASSET_MANAGER = new AssetManager();
+ASSET_MANAGER.queueDownload("sprites/backgrounds/grunge/bg.png");
+ASSET_MANAGER.queueDownload("sprites/backgrounds/grunge/buildings.png");
+ASSET_MANAGER.queueDownload("sprites/backgrounds/grunge/far-buildings.png");
+ASSET_MANAGER.queueDownload("sprites/backgrounds/grunge/skill-foreground.png");
+ASSET_MANAGER.queueDownload("sprites/backgrounds/city skyline/front.png");
+ASSET_MANAGER.queueDownload("sprites/backgrounds/city skyline/buildings.png");
+ASSET_MANAGER.queueDownload("sprites/backgrounds/city skyline/back.png");
 ASSET_MANAGER.queueDownload("sprites/temp.png");
+ASSET_MANAGER.queueDownload("sprites/adventurer-Sheet.png");
 ASSET_MANAGER.queueDownload("sprites/SawBladeSuriken.png");
 ASSET_MANAGER.queueDownload("sprites/Trap_Spike.png");
+ASSET_MANAGER.queueDownload("sprites/jumppad.png");
+
+
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
@@ -13,17 +24,20 @@ ASSET_MANAGER.downloadAll(() => {
 	PARAMS.BLOCKWIDTH = PARAMS.BITWIDTH * PARAMS.SCALE;
 
 	gameEngine.init(ctx);
-	this.Player = new Player(gameEngine, 0, 400)
-	gameEngine.addEntityPast(this.Player);
-	gameEngine.addEntityPresent(this.Player);
+	this.player = new Player(gameEngine, 0, 400)
+	gameEngine.player = this.player;
+	gameEngine.camera = new Camera(gameEngine, ctx.canvas.width, ctx.canvas.height);
+	gameEngine.addEntityPast(this.player);
+	gameEngine.addEntityPresent(this.player);
 
+	//background parallax demo
 	//demo for collision
-	gameEngine.addEntityPast(new invisible_collision(gameEngine, 0, 600, 500, 100));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, 0, 600, 5000, 100));
 	gameEngine.addEntityPast(new invisible_collision(gameEngine, 400, 550, 200, 200));
 	gameEngine.addEntityPast(new invisible_collision(gameEngine, -20, 0, 20, 550));
 	gameEngine.addEntityPast(new invisible_collision(gameEngine, 800, 0, 20, 550));
 	gameEngine.addEntityPast(new invisible_collision(gameEngine, 1000, 600, 200, 200))
-	gameEngine.addEntityPresent(new invisible_collision(gameEngine,  0, 600, 500, 100))
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine,  0, 600, 5000, 100))
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 400, 550, 200, 200))
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, -20, 0, 20, 550))
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 1000, 0, 20, 550));
@@ -50,11 +64,25 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.addEntityPast(spike1);
 	gameEngine.addEntityPresent(spike1);
 
+	// Demo Jump pad
+	const jumpP = new JumpPad(gameEngine, 100, 485);
+	gameEngine.addEntityPast(jumpP);
+	gameEngine.addEntityPresent(jumpP);
+
 	// Demo hazards - Saw Blade (moving)
 	// This saw blade moves horizontally 200 pixels at speed 150
 	const sawBlade1 = new SawBlade(gameEngine, 600, 500, 50, 150, 150, "horizontal");
 	gameEngine.addEntityPast(sawBlade1);
 	gameEngine.addEntityPresent(sawBlade1);
+
+	//background should be added after everything 
+	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/grunge/skill-foreground.png", 0.4, 225, 4));
+	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/grunge/far-buildings.png", 0.3, 50, 4));
+	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/grunge/buildings.png", 0.2, 0, 4));
+	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/grunge/bg.png", 0.1, 0, 4));
+	gameEngine.addEntityPresent(new ParallaxLayer(gameEngine, "sprites/backgrounds/city skyline/front.png", 0.4, 100, 3));
+	gameEngine.addEntityPresent(new ParallaxLayer(gameEngine, "sprites/backgrounds/city skyline/buildings.png", 0.2, 150, 2.5));
+	gameEngine.addEntityPresent(new ParallaxLayer(gameEngine, "sprites/backgrounds/city skyline/back.png", 0.1, 0, 3));
 
 	gameEngine.start();
 });

@@ -6,16 +6,33 @@ class Player {
         this.spawnX = x;
         this.spawnY = y;
 
-        this.width = 20;
-        this.height = 26;
+        this.width = 24;
+        this.height = 32;
 
         this.animations = {
-            temp: new Animator(
-                ASSET_MANAGER.getAsset("sprites/temp.png"),
-                0, 0, 20, 26, 1, 1
-            )
+            idle: new Animator(
+                ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
+                3, 0, 32, 32, 4, 0.2
+            ),
+            run: new Animator(
+                ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
+                3, 32, 32, 32, 6, 0.15
+            ),
+            jump: new Animator(
+                ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
+                67, 64, 32, 32, 2, 0.2
+            ),
+            fall: new Animator(
+                ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
+                3, 96, 32, 32, 2, 0.1
+            ),
+            dash: new Animator(
+                ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
+                3, 128, 32, 32, 4, 0.05
+            ),
+            // TODO: Add death animation here?
         };
-        this.animator = this.animations.temp;
+        this.animator = this.animations.idle;
 
         // Physics
         this.velocity = { x: 0, y: 0 };
@@ -35,6 +52,8 @@ class Player {
         this.jumpBuffer = 0;
         this.hasDoubleJump = true;
         this.wasJumpPressed = false;
+        //jump pad helper
+        this.fromJumpPad = false;
 
         // Dash
         this.canDash = true;
@@ -175,26 +194,17 @@ class Player {
             }
 
             // Variable jump height
-            if (!jumpPressed && this.velocity.y < 0) {
+            if (!jumpPressed && this.velocity.y < 0 && !this.fromJumpPad) {
                 this.velocity.y *= JUMP_CUT_MULT;
             }
 
             //Gravity
             this.velocity.y += GRAVITY * TICK;
             this.velocity.y = Math.min(this.velocity.y, MAX_FALL);
+            if (this.velocity.y >= 0) this.fromJumpPad = false;
             if(this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
         }
 
-    // if (this.y + this.height >= GROUND_Y) {
-    //         this.y = GROUND_Y - this.height;
-    //         this.velocity.y = 0;
-    //         this.onGround = true;
-    //         this.coyoteTime = COYOTE_TIME_MAX;
-    //         this.hasDoubleJump = true;
-    //         this.canDash = true;
-    //     } else {
-    //         this.onGround = false;
-    //     }
 
         // update position
         this.x += this.velocity.x * TICK;
@@ -258,6 +268,7 @@ class Player {
             this.timeJumpTimer = TIME_JUMP_DURATION;
         }
 
+        this.checkJumpPadCollision();
         // Check for hazard collisions
         this.checkHazardCollision();
 
@@ -269,6 +280,22 @@ class Player {
         if (!this.onGround) this.state = "jump";
         else if (Math.abs(this.velocity.x) > 10) this.state = "run";
         else this.state = "idle";
+
+        //animation selection after all flags reset
+            if (this.dead) {
+                //something here
+            }
+            if (this.dashTime > 0) {
+                this.animator = this.animations.dash;
+            } else if (!this.onGround) {
+                if (this.velocity.y < 0) {
+                    this.animator = this.animations.jump;
+                } else {
+                    this.animator = this.animations.fall;
+                }
+            } else if (Math.abs(this.velocity.x) > 10) {
+                this.animator = this.animations.run;
+            } else{ this.animator = this.animations.idle;}
     }
 
     // Check collision with hazards (spikes, saw blades, etc.)
@@ -280,6 +307,28 @@ class Player {
             }
         });
     }
+    //check for jump pad
+    checkJumpPadCollision() {
+    const that = this;
+
+    this.game.getEntityList().forEach(function (entity) {
+        if (entity.isJumpPad && entity.BB && that.BB.collide(entity.BB)) {
+
+            // Only trigger if landing on it (from above)
+            if (that.velocity.y > 0 && that.lastBB.bottom <= entity.BB.top + 10) {
+                that.y = entity.BB.top - that.height * 4;
+                that.velocity.y = -entity.boost;
+                that.fromJumpPad = true;
+
+                that.onGround = false;
+                that.coyoteTime = 0;
+                that.hasDoubleJump = true;
+                that.canDash = true;
+                entity.bounce();
+            }
+        }
+    });
+}
 
     // Trigger death state - Mario style pop up then fall
     die() {
@@ -371,7 +420,8 @@ class Player {
 
 
     draw(ctx) {
-        this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        const flip = this.facing === "left"; //changes animation direction
+        this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
         // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
         this.BB.draw(ctx);
     }

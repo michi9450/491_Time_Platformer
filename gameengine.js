@@ -5,6 +5,8 @@ class GameEngine {
         // What you will use to draw
         // Documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
         this.ctx = null;
+        this.player = null;
+        this.camera = null;
 
         // Everything that will be updated and drawn each frame
         this.entitiesPast = [];//list of entities in "past" version stage
@@ -102,11 +104,18 @@ class GameEngine {
         // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+        //saves the entire state of the canvas by pushing it into a stack.
+        this.ctx.save();
+        this.ctx.translate(-this.camera.x, -this.camera.y);
+
         // Draw latest things first
         this.currentlist = this.getEntityList();
         for (let i = this.currentlist.length - 1; i >= 0; i--) {
             this.currentlist[i].draw(this.ctx, this);
         }
+        
+        //restores the most recently saved canvas state if any
+        this.ctx.restore();
     };
 
     update() {
@@ -126,6 +135,7 @@ class GameEngine {
                 this.currentlist.splice(i, 1);
             }
         }
+        this.camera.update();
     };
 
     loop() {
