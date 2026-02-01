@@ -269,6 +269,8 @@ class Player {
         }
 
         this.checkJumpPadCollision();
+        // Check for portal collisions
+        this.checkPortalCollision();
         // Check for hazard collisions
         this.checkHazardCollision();
 
@@ -329,6 +331,18 @@ class Player {
         }
     });
 }
+
+    // Check for portal collisions and teleport
+    checkPortalCollision() {
+        const that = this;
+
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity.isTeleporter && entity.BB && that.BB.collide(entity.BB)) {
+                // Attempt to teleport through the portal
+                entity.teleport(that);
+            }
+        });
+    }
 
     // Trigger death state - Mario style pop up then fall
     die() {

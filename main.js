@@ -13,6 +13,7 @@ ASSET_MANAGER.queueDownload("sprites/adventurer-Sheet.png");
 ASSET_MANAGER.queueDownload("sprites/SawBladeSuriken.png");
 ASSET_MANAGER.queueDownload("sprites/Trap_Spike.png");
 ASSET_MANAGER.queueDownload("sprites/jumppad.png");
+ASSET_MANAGER.queueDownload("sprites/Dimensional_Portal.png");
 
 
 
@@ -74,6 +75,24 @@ ASSET_MANAGER.downloadAll(() => {
 	const sawBlade1 = new SawBlade(gameEngine, 600, 500, 50, 150, 150, "horizontal");
 	gameEngine.addEntityPast(sawBlade1);
 	gameEngine.addEntityPresent(sawBlade1);
+
+	// Demo Portals - PAST timeline
+	// Create entry portal on the left, exit portal on the right (bi-directional with 10s cooldown)
+	const portalPastEntry = new Portal(gameEngine, 400, 175);
+	const portalPastExit = new Portal(gameEngine, 850, 300);
+	portalPastEntry.setLinkedPortal(portalPastExit); // Entry → Exit
+	portalPastExit.setLinkedPortal(portalPastEntry);  // Exit → Entry (bi-directional)
+	gameEngine.addEntityPast(portalPastEntry);
+	gameEngine.addEntityPast(portalPastExit);
+
+	// Demo Portals - PRESENT timeline (different positions!)
+	// Entry portal at different location, exit portal at different location (bi-directional with 10s cooldown)
+	const portalPresentEntry = new Portal(gameEngine, 150, 175);
+	const portalPresentExit = new Portal(gameEngine, 1000, 200);
+	portalPresentEntry.setLinkedPortal(portalPresentExit); // Entry → Exit
+	portalPresentExit.setLinkedPortal(portalPresentEntry);  // Exit → Entry (bi-directional)
+	gameEngine.addEntityPresent(portalPresentEntry);
+	gameEngine.addEntityPresent(portalPresentExit);
 
 	//background should be added after everything 
 	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/grunge/skill-foreground.png", 0.4, 225, 4));
