@@ -120,7 +120,7 @@ class Player {
         const right = this.game.keys["KeyD"];
         const jumpPressed = this.game.keys["Space"];
         const dashPressed = this.game.keys["ShiftLeft"];
-        const timejumpPressed = this.game.keys["KeyC"];
+        const timejumpPressed = this.game.keys["KeyM"];
 
         //timers
         this.coyoteTime -= TICK;
@@ -355,6 +355,7 @@ class Player {
         // Mario-style death: pop up first
         this.velocity.y = -500; // Pop up
         this.velocity.x = 0;    // Stop horizontal movement
+
     }
 
     // Update death animation
@@ -380,6 +381,7 @@ class Player {
 
     // Respawn player at spawn point
     respawn() {
+        if(!(this.game.isPast)) this.game.changeTime();
         this.x = this.spawnX;
         this.y = this.spawnY;
         this.velocity = { x: 0, y: 0 };

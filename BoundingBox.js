@@ -27,6 +27,6 @@ class BoundingBox {
     }
 
     draw(ctx){
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        //ctx.strokeRect(this.x, this.y, this.width, this.height); //shows bounding box
     }
 };

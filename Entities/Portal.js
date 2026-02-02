@@ -1,5 +1,5 @@
 class Portal {
-    constructor(game, x, y, linkedPortal = null, width = 32, height = 32) {
+    constructor(game, x, y, linkedPortal = null, width = 16, height = 32) {
         Object.assign(this, { game, x, y, width, height });
 
         // Reference to the portal this one teleports to
@@ -40,7 +40,7 @@ class Portal {
         const portalCenterX = this.linkedPortal.x + (this.linkedPortal.width * this.linkedPortal.scale / 2);
         const portalCenterY = this.linkedPortal.y + (this.linkedPortal.height * this.linkedPortal.scale / 2);
 
-        player.x = portalCenterX - (player.width * 4 / 2);
+        player.x = portalCenterX - (player.width * 2 / 2);
         player.y = portalCenterY - (player.height * 4 / 2);
 
         // Preserve player velocity (they keep moving in the same direction)
@@ -57,7 +57,7 @@ class Portal {
     }
 
     updateBB() {
-        this.BB = new BoundingBox(this.x, this.y, this.width * this.scale, this.height * this.scale);
+        this.BB = new BoundingBox(this.x + this.width * 2, this.y, this.width * this.scale , this.height * this.scale);
     }
 
     update() {
