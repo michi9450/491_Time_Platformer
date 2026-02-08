@@ -1,30 +1,32 @@
-//basically works by changing the ctx movement settings from the scroll mechanic that we have
-// need to make one object for each layer of background image that you are using
 class ParallaxLayer {
-  constructor(game, imagePath, speedFactor, y = 0, scale = 1) {
-    this.game = game;
+  constructor(game, imagePath, speedFactor, y = 0, scale = 1, isStatic = false, x = 0) {
+    Object.assign(this, { game, speedFactor, y, scale, isStatic, x });
     this.image = ASSET_MANAGER.getAsset(imagePath);
-    this.speedFactor = speedFactor; // change how fast this layer moves, close should be fastest and furthest slowest
-    this.y = y;
-    this.scale = scale;
   }
 
   update() {}
 
   draw(ctx) {
+    if (!this.image) return;
+
     ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    const cameraX = this.game.camera.x * this.speedFactor;
+
     const imgWidth = this.image.width * this.scale;
-    const startX = -(cameraX % imgWidth);
-    for (let x = startX; x < ctx.canvas.width; x += imgWidth) {
-      ctx.drawImage(
-        this.image,
-        x,
-        this.y,
-        imgWidth,
-        this.image.height * this.scale,
-      );
+    const imgHeight = this.image.height * this.scale;
+
+    // parallax background
+    if (!this.isStatic) {
+      // reset camera transform
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+      const cameraX = this.game.camera.x * this.speedFactor;
+      const startX = -(cameraX % imgWidth);
+
+      for (let x = startX; x < ctx.canvas.width; x += imgWidth) {
+        ctx.drawImage(this.image, x, this.y, imgWidth, imgHeight);
+      }
+    } else { // does not move at all
+      ctx.drawImage(this.image, this.x, this.y, imgWidth, imgHeight);
     }
 
     ctx.restore();
