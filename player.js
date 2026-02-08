@@ -110,7 +110,7 @@ class Player {
         //horizontal dash speed movement
         const DASH_SPEED = 900;
         //how long the dash lasts in (seconds)
-        const DASH_DURATION = 0.15;
+        const DASH_DURATION = 0.2;
 
         //how long the time animation lasts in (seconds)
         const TIME_JUMP_DURATION = .2;
