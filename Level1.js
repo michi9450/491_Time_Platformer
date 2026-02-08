@@ -1,5 +1,5 @@
 var SceneOne = {
-    collision:[{dimension: 0, x: 45, y: 0, width: 20, height: 550}, 
+    collisions:[{dimension: 0, x: 45, y: 0, width: 20, height: 550}, 
         {dimension: 0, x: 45, y: 0, width: 20, height: 550}, 
         {dimension: 1, x: 45, y: 0, width: 20, height: 550}, 
         {dimension: 0, x: 3140, y: 0, width: 20, height: 550},
