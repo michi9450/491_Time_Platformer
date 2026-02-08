@@ -53,8 +53,8 @@ ASSET_MANAGER.downloadAll(() => {
 	//wall on leftside of screen and rightside
 	gameEngine.addEntityPast(new invisible_collision(gameEngine, 45, 0, 20, 550));
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 45, 0, 20, 550));
-	gameEngine.addEntityPast(new invisible_collision(gameEngine, 3000, 0, 20, 550));
-	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 3000, 0, 20, 550));
+	gameEngine.addEntityPast(new invisible_collision(gameEngine, 3200-60, 0, 20, 550));
+	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 3200-60, 0, 20, 550));
 
 	//collision past
 	gameEngine.addEntityPast(new invisible_collision(gameEngine, 0, 640, 700, 100));
@@ -107,8 +107,8 @@ ASSET_MANAGER.downloadAll(() => {
 	// gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/levels/screen_1_past.png", 0,0,2, true));
 	// gameEngine.addEntityPresent(new ParallaxLayer(gameEngine, "sprites/levels/screen_1_present.png", 0, 0, 2, true));
 	
-	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/levels/screen_2_past.png", 0,0,2, true));
-	gameEngine.addEntityPresent(new ParallaxLayer(gameEngine, "sprites/levels/screen_2_present.png", 0, 0, 2, true));
+	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/levels/screen_1_past.png", 0,0,2, true));
+	gameEngine.addEntityPresent(new ParallaxLayer(gameEngine, "sprites/levels/screen_1_present.png", 0, 0, 2, true));
 
 	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/snowy mountains/clouds_mg_1.png", 0.6, 100, 3, false, 0));
 	gameEngine.addEntityPast(new ParallaxLayer(gameEngine, "sprites/backgrounds/snowy mountains/clouds_mg_2.png", 0.4, 50, 3, false, 0));
