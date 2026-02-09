@@ -181,7 +181,8 @@ class Player {
     // Check for hazard collisions
     this.checkHazardCollision();
 
-    this.checkLevel_Transition();
+    this.checkLevel_Transition()
+
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
       this.respawn();
@@ -250,6 +251,28 @@ class Player {
     this.velocity.y = -500; // Pop up
     this.velocity.x = 0; // Stop horizontal movement
   }
+  respawn() {
+        if(!(this.game.isPast)) this.game.changeTime();
+        this.x = this.spawnX;
+        this.y = this.spawnY;
+        this.velocity = { x: 0, y: 0 };
+        this.dead = false;
+        this.state = "idle";
+        this.deathTimer = 0;
+        this.onGround = false;
+        this.hasDoubleJump = true;
+        this.canDash = true;
+        this.coyoteTime = 0;
+
+        // Reset all falling platforms
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof FallingPlatform) {
+                entity.reset();
+            }
+        });
+        this.jumpBuffer = 0;
+        this.updateBB();
+    }
 
   // Update death animation
   updateDeathAnimation(TICK) {
