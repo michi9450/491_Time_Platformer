@@ -280,6 +280,8 @@ class Player {
         this.checkPortalCollision();
         // Check for hazard collisions
         this.checkHazardCollision();
+        // Check for level transition collision
+        this.checkLevel_Transition();
 
         // Check if player fell off the map (below screen)
         if (this.y > 1000) {
@@ -347,6 +349,19 @@ class Player {
             if (entity.isTeleporter && entity.BB && that.BB.collide(entity.BB)) {
                 // Attempt to teleport through the portal
                 entity.teleport(that);
+            }
+        });
+    }
+
+    checkLevel_Transition() {
+        const that = this;
+
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof level_transition) {
+                if(entity.BB && that.BB.collide(entity.BB)){
+                    // changes to level transitions stored level.
+                    entity.SM.loadnewLevel(entity.getlevel());
+                } 
             }
         });
     }
