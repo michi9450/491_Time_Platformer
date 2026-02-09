@@ -32,6 +32,8 @@ ASSET_MANAGER.queueDownload("sprites/levels/screen_1_past.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_1_present.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_2_past.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_2_present.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_3_past.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_3_present.png");
 
 
 
