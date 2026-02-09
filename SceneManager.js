@@ -4,17 +4,22 @@ class SceneManager {
         //this.game.camera = this; scene manager controls camera however, going to add this later
         this.lives = 3; //SceneManager will control amount of lives player has
 
-        this.player = new Player(gameEngine, 100, 400) // creates player object
 
         this.LoadScreen(SceneOne, 0, 0);
     }
 
+    loadnewLevel(screen){//change this to a hashmap later
+        if(screen === "SceneTwo"){
+            this.LoadScreen(SceneTwo, 0, 0);
+        }
+    }
+
     clearEntities(){
         this.game.entitiesPast.forEach(function (entity){
-            entitiy.removeFromWorld = true;
+            entity.removeFromWorld = true;
         })
         this.game.entitiesPresent.forEach(function (entity){
-            entitiy.removeFromWorld = true;
+            entity.removeFromWorld = true;
         })
     }
     /*
@@ -30,13 +35,14 @@ class SceneManager {
         this.clearEntities();
 
        // this.game.camera = new Camera(this.game, this.ctx.canvas.width, this.ctx.canvas.height);
+       this.player = new Player(gameEngine, 100, 400) // creates player object
         this.game.player = this.player;
         this.game.addEntityPast(this.player);
 	    this.game.addEntityPresent(this.player);
 
-        if(screen.collisions) {
-            for (let i = 0; i < screen.collisions.length; i++) {
-                let ent = screen.collisions[i];
+        if(this.screen.collisions) {
+            for (var i = 0; i < this.screen.collisions.length; i++) {
+                var ent = this.screen.collisions[i];
                 if(ent.dimension == 0) {// adds the collision for something in the past.
                     this.game.addEntityPast(new invisible_collision(this.game, ent.x, ent.y, ent.width, ent.height));
                 }
@@ -46,9 +52,9 @@ class SceneManager {
             }
         }
 
-        if(screen.falling) {
-            for (let i = 0; i < screen.falling.length; i++) {
-                let ent = screen.falling[i];
+        if(this.screen.falling) {
+            for (var i = 0; i < this.screen.falling.length; i++) {
+                var ent = this.screen.falling[i];
                 if(ent.dimension == 0) {// adds the falling for something in the past.
                     this.game.addEntityPast(new FallingPlatform(this.game, ent.x, ent.y, ent.width, ent.height, ent.delay));
                 }
@@ -58,9 +64,9 @@ class SceneManager {
             }
         }
 
-        if(screen.jumppad) {
-            for (let i = 0; i < screen.jumppad.length; i++) {
-                let ent = screen.jumppad[i];
+        if(this.screen.jumppad) {
+            for (var i = 0; i < this.screen.jumppad.length; i++) {
+                var ent = this.screen.jumppad[i];
                 if(ent.dimension == 0) {// adds the jumppad for something in the past.
                     this.game.addEntityPast(new JumpPad(this.game, ent.x, ent.y));
                 }
@@ -70,9 +76,9 @@ class SceneManager {
             }
         }
 
-        if(screen.saw) {
-            for (let i = 0; i < screen.saw.length; i++) {
-                let ent = screen.saw[i];
+        if(this.screen.saw) {
+            for (var i = 0; i < this.screen.saw.length; i++) {
+                var ent = this.screen.saw[i];
                 if(ent.dimension == 0) {// adds the saw for something in the past.
                     this.game.addEntityPast(new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction));
                 }
@@ -82,9 +88,9 @@ class SceneManager {
             }
         }
 
-        if(screen.moving) {
-            for (let i = 0; i < screen.moving.length; i++) {
-                let ent = screen.moving[i];
+        if(this.screen.moving) {
+            for (var i = 0; i < this.screen.moving.length; i++) {
+                var ent = this.screen.moving[i];
                 if(ent.dimension == 0) {// adds the moving for something in the past.
                     this.game.addEntityPast(new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed));
                 }
@@ -94,9 +100,9 @@ class SceneManager {
             }
         }
 
-        if(screen.spike) {
-            for (let i = 0; i < screen.spike.length; i++) {
-                let ent = screen.spike[i];
+        if(this.screen.spike) {
+            for (var i = 0; i < this.screen.spike.length; i++) {
+                var ent = this.screen.spike[i];
                 if(ent.dimension == 0) {// adds the spike for something in the past.
                     this.game.addEntityPast(new Spike(this.game, ent.x, ent.y, ent.width, ent.height));
                 }
@@ -106,9 +112,9 @@ class SceneManager {
             }
         }
 
-        if(screen.portal) {
-            for (let i = 0; i < screen.portal.length; i++) {
-                let ent = screen.portal[i];
+        if(this.screen.portal) {
+            for (var i = 0; i < this.screen.portal.length; i++) {
+                var ent = this.screen.portal[i];
                 if(ent.dimension == 0) {// adds the portal for something in the past.
                     this.game.addEntityPast(new invisible_collision(this.game, ent.x, ent.y, ent.width, ent.height));
                 }
@@ -117,14 +123,26 @@ class SceneManager {
                 }
             }
         }
-        if(screen.parallax) {
-            for (let i = 0; i < screen.parallax.length; i++) {
-                let ent = screen.parallax[i];
+        if(this.screen.parallax) {
+            for (var i = 0; i < this.screen.parallax.length; i++) {
+                var ent = this.screen.parallax[i];
                 if(ent.dimension == 0) {// adds the portal for something in the past.
                     this.game.addEntityPast(new ParallaxLayer(this.game, ent.file, 0, 0 , 2, true));
                 }
                 else { //adds the portal for something in the present.
                     this.game.addEntityPresent(new ParallaxLayer(this.game, ent.file, 0, 0 , 2, true));
+                }
+            }
+        }
+
+        if(this.screen.transition) {
+            for (var i = 0; i < this.screen.transition.length; i++) {
+                var ent = this.screen.transition[i];
+                if(ent.dimension == 0) {// adds the portal for something in the past.
+                    this.game.addEntityPast(new level_transition(this.game, ent.x, ent.y, ent.width, ent.height, ent.level, this));
+                }
+                else { //adds the portal for something in the present.
+                    this.game.addEntityPresent(new level_transition(this.game, ent.x, ent.y, ent.width, ent.height, ent.level, this));
                 }
             }
         }
