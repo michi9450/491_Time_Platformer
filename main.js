@@ -80,18 +80,18 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 2240, 195, 60, 440));
 	gameEngine.addEntityPresent(new invisible_collision(gameEngine, 2816, 195, 60, 440));
 	// //plateforms 
-	// gameEngine.addEntityPast(new FallingPlatform(gameEngine, 550, 500, 100, 20, 1.0));
+	 gameEngine.addEntityPast(new FallingPlatform(gameEngine, 550, 500, 100, 20, 1.0));
 	// gameEngine.addEntityPast(new FallingPlatform(gameEngine, 800, 500, 100, 20, 1.0));
 	// gameEngine.addEntityPast(new FallingPlatform(gameEngine, 1100, 500, 100, 20, 1.0));
 	// gameEngine.addEntityPresent(new FallingPlatform(gameEngine, 1850, 500, 100, 20, 1.0));
 
 	// //hazards
 	// gameEngine.addEntityPresent(new SawBlade(gameEngine, 550, 500, 50, 250, 200, "horizontal"));
-	gameEngine.addEntityPast(new Spike(gameEngine, 1700, 550, 80, 20));
-	gameEngine.addEntityPast(new Spike(gameEngine, 1750, 550, 80, 20));
-	gameEngine.addEntityPast(new Spike(gameEngine, 1800, 550, 80, 20));
-	gameEngine.addEntityPast(new Spike(gameEngine, 1850, 550, 80, 20));
-	gameEngine.addEntityPast(new Spike(gameEngine, 1900, 550, 80, 20));
+	// gameEngine.addEntityPast(new Spike(gameEngine, 1700, 550, 80, 20));
+	// gameEngine.addEntityPast(new Spike(gameEngine, 1750, 550, 80, 20));
+	// gameEngine.addEntityPast(new Spike(gameEngine, 1800, 550, 80, 20));
+	// gameEngine.addEntityPast(new Spike(gameEngine, 1850, 550, 80, 20));
+	// gameEngine.addEntityPast(new Spike(gameEngine, 1900, 550, 80, 20));
 
 	// //jump pads
 	// gameEngine.addEntityPast(new JumpPad(gameEngine, 2500, 485));
