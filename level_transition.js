@@ -3,6 +3,7 @@ class level_transition{
         Object.assign(this, { game, x, y , width, height});
         this.level = level;
         this.SM = SceneManager;
+        this.isLevelTransition = true;
         this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
     }
 

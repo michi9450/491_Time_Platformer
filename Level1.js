@@ -21,6 +21,7 @@ var SceneOne = {
         {dimension: 1, x: 2816, y: 195, width: 60, height: 440}],
     parallax: [{dimension: 0, file: "sprites/levels/screen_1_past.png"},
             {dimension: 1, file: "sprites/levels/screen_1_present.png"}],
+    //jumppad: [{dimension: 0, x: 800, y: 600, }],
     transition: [{dimension: 0, x: 3100, y: 500, width: 60, height: 60, level: "SceneTwo"},
                 {dimension: 1, x: 3100, y: 500, width: 60, height: 60, level: "SceneTwo"}]
 };

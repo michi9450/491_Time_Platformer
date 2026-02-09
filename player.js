@@ -124,64 +124,15 @@ class Player {
     }
 
     this.#handleInput(TICK);
+    this.x += this.velocity.x * TICK;
+    this.updateBB();
 
-    this.handleHorizontalCollision();
+    this.#handleCollisions("x");
 
     this.y += this.velocity.y * TICK;
     this.updateBB();
-    const that = this;
-    //console.log("verticle");
-    this.game.getEntityList().forEach(function (entity) {
-      //if statesments for all collision cases
-      if (that.velocity.y > 0) {
-        //falling cases
-        if (entity.BB && that.BB.collide(entity.BB)) {
-          // Check for all platform types
-          if (entity.isPlatform && that.lastBB.bottom <= entity.BB.top + 10) {
-            //landing - added tolerance for moving platforms
-            that.y = entity.BB.top - that.height * 4;
-            that.velocity.y = 0;
-            that.onGround = true;
-            that.canDash = true;
-            that.hasDoubleJump = true;
-            that.coyoteTime = that.config.coyoteTime;
-
-            // Activate falling platform when player lands on it
-            if (entity instanceof FallingPlatform) {
-              entity.activate();
-            }
-
-            // Move with moving platform (both X and Y)
-            if (
-              entity instanceof MovingPlatform &&
-              entity.lastX !== undefined
-            ) {
-              that.x += entity.x - entity.lastX;
-              that.y += entity.y - entity.lastY;
-            }
-          }
-        }
-      }
-      if (that.velocity.y < 0) {
-        //jumping cases
-        if (entity.BB && that.BB.collide(entity.BB)) {
-          // Check for all platform types
-          if (entity.isPlatform && that.lastBB.top >= entity.BB.bottom - 10) {
-            //ceiling - added tolerance
-            that.y = entity.BB.bottom;
-            that.velocity.y = 0;
-          }
-        }
-      }
-    });
-
-    this.checkJumpPadCollision();
-    // Check for portal collisions
-    this.checkPortalCollision();
-    // Check for hazard collisions
-    this.checkHazardCollision();
-
-    this.checkLevel_Transition()
+    this.onGround = false;
+    this.#handleCollisions("y");
 
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
@@ -196,83 +147,28 @@ class Player {
     this.#updateAnimation();
   }
 
-  // Check collision with hazards (spikes, saw blades, etc.)
-  checkHazardCollision() {
-    const that = this;
-    this.game.getEntityList().forEach(function (entity) {
-      if (entity.isHazard && entity.BB && that.BB.collide(entity.BB)) {
-        that.die();
-      }
-    });
-  }
-  //check for jump pad
-  checkJumpPadCollision() {
-    const that = this;
-
-    this.game.getEntityList().forEach(function (entity) {
-      if (entity.isJumpPad && entity.BB && that.BB.collide(entity.BB)) {
-        // Only trigger if landing on it (from above)
-        if (that.velocity.y > 0 && that.lastBB.bottom <= entity.BB.top + 10) {
-          that.y = entity.BB.top - that.height * 4;
-          that.velocity.y = -entity.boost;
-          that.fromJumpPad = true;
-
-          that.onGround = false;
-          that.coyoteTime = 0;
-          that.hasDoubleJump = true;
-          that.canDash = true;
-          entity.bounce();
-        }
-      }
-    });
-  }
-
-  // Check for portal collisions and teleport
-  checkPortalCollision() {
-    const that = this;
-
-    this.game.getEntityList().forEach(function (entity) {
-      if (entity.isTeleporter && entity.BB && that.BB.collide(entity.BB)) {
-        // Attempt to teleport through the portal
-        entity.teleport(that);
-      }
-    });
-  }
-
-  // Trigger death state - Mario style pop up then fall
-  die() {
-    if (this.dead) return; // Already dead, don't trigger again
-
-    this.dead = true;
-    this.state = "dead";
-    this.deathTimer = 0;
-
-    // Mario-style death: pop up first
-    this.velocity.y = -500; // Pop up
-    this.velocity.x = 0; // Stop horizontal movement
-  }
   respawn() {
-        if(!(this.game.isPast)) this.game.changeTime();
-        this.x = this.spawnX;
-        this.y = this.spawnY;
-        this.velocity = { x: 0, y: 0 };
-        this.dead = false;
-        this.state = "idle";
-        this.deathTimer = 0;
-        this.onGround = false;
-        this.hasDoubleJump = true;
-        this.canDash = true;
-        this.coyoteTime = 0;
+    if (!this.game.isPast) this.game.changeTime();
+    this.x = this.spawnX;
+    this.y = this.spawnY;
+    this.velocity = { x: 0, y: 0 };
+    this.dead = false;
+    this.state = "idle";
+    this.deathTimer = 0;
+    this.onGround = false;
+    this.hasDoubleJump = true;
+    this.canDash = true;
+    this.coyoteTime = 0;
 
-        // Reset all falling platforms
-        this.game.getEntityList().forEach(function (entity) {
-            if (entity instanceof FallingPlatform) {
-                entity.reset();
-            }
-        });
-        this.jumpBuffer = 0;
-        this.updateBB();
-    }
+    // Reset all falling platforms
+    this.game.getEntityList().forEach(function (entity) {
+      if (entity instanceof FallingPlatform) {
+        entity.reset();
+      }
+    });
+    this.jumpBuffer = 0;
+    this.updateBB();
+  }
 
   // Update death animation
   updateDeathAnimation(TICK) {
@@ -295,23 +191,22 @@ class Player {
     }
   }
 
-    checkLevel_Transition() {
-        const that = this;
-
-        this.game.getEntityList().forEach(function (entity) {
-            if (entity instanceof level_transition) {
-                if(entity.BB && that.BB.collide(entity.BB)){
-                    // changes to level transitions stored level.
-                    entity.SM.loadnewLevel(entity.getlevel());
-                } 
-            }
-        });
+  #handleLevelTransition(entity) {
+    if (entity.isLevelTransition) {
+      entity.SM.loadnewLevel(entity.getlevel());
     }
+  }
 
-    // Trigger death state - Mario style pop up then fall
-    die() {
-        if (this.dead) return; // Already dead, don't trigger again
+  // Trigger death state - Mario style pop up then fall
+  die() {
+    if (this.dead) return; // Already dead, don't trigger again
+    this.dead = true;
+    this.state = "dead";
+    this.deathTimer = 0;
 
+    // Mario-style death: pop up first
+    this.velocity.y = -500; // Pop up
+    this.velocity.x = 0; // Stop horizontal movement
     // Reset all falling platforms
     this.game.getEntityList().forEach(function (entity) {
       if (entity instanceof FallingPlatform) {
@@ -322,32 +217,85 @@ class Player {
     this.updateBB();
   }
 
-  handleHorizontalCollision() {
-    //console.log("hoirzontal");
-    const that = this;
-    this.game.getEntityList().forEach(function (entity) {
-      //console.log(that.BB.collide(entity.BB));
-      if (entity.BB && that.BB.collide(entity.BB)) {
-        // Check for all platform types
-        if (entity.isPlatform) {
-          let overlap = that.BB.overlap(entity.BB);
+  #handleHorizontalCollision(entity) {
+    if (!entity.isPlatform) return;
 
-          // Determine collision side based on where player was coming from
-          const fromLeft = that.lastBB.right <= entity.BB.left + 5;
-          const fromRight = that.lastBB.left >= entity.BB.right - 5;
+    const fromLeft = this.lastBB.right <= entity.BB.left + 5;
+    const fromRight = this.lastBB.left >= entity.BB.right - 5;
 
-          if (fromLeft && that.velocity.x > 0) {
-            //console.log("it is doing the thing");
-            that.x = entity.BB.left - that.width * 4;
-            that.velocity.x = 0;
-          } else if (fromRight && that.velocity.x < 0) {
-            //console.log("it is doing the thing 2");
-            that.x = entity.BB.right;
-            that.velocity.x = 0;
-          }
-        }
+    if (fromLeft && this.velocity.x > 0) {
+      this.x = entity.BB.left - this.width * 4;
+      this.velocity.x = 0;
+    } else if (fromRight && this.velocity.x < 0) {
+      this.x = entity.BB.right;
+      this.velocity.x = 0;
+    }
+  }
+  #handleVerticalCollisions(entity) {
+    if (!entity.isPlatform) return;
+
+    // landing
+    if (this.velocity.y > 0 && this.lastBB.bottom <= entity.BB.top + 10) {
+      this.y = entity.BB.top - this.height * 4;
+      this.velocity.y = 0;
+      this.onGround = true;
+      this.canDash = true;
+      this.hasDoubleJump = true;
+      this.coyoteTime = this.config.coyoteTime;
+
+      if (entity instanceof FallingPlatform) entity.activate();
+
+      if (entity instanceof MovingPlatform && entity.lastX !== undefined) {
+        this.x += entity.x - entity.lastX;
+        this.y += entity.y - entity.lastY;
       }
-    });
+    }
+
+    // ceiling
+    if (this.velocity.y < 0 && this.lastBB.top >= entity.BB.bottom - 10) {
+      this.y = entity.BB.bottom;
+      this.velocity.y = 0;
+    }
+  }
+  #handleCollisions(axis) {
+    for (const entity of this.game.getEntityList()) {
+      if (!entity.BB) continue;
+      if (!this.BB.collide(entity.BB)) continue;
+
+      if (axis === "x") this.#handleHorizontalCollision(entity);
+
+      if (axis === "y") {
+        this.#handleVerticalCollisions(entity);
+        this.#handleJumpPad(entity);
+      }
+
+      this.#handleHazard(entity);
+      this.#handlePortal(entity);
+      this.#handleLevelTransition(entity);
+    }
+  }
+  #handleJumpPad(entity) {
+    if (!entity.isJumpPad) return;
+
+    if (this.velocity.y > 0 && this.lastBB.bottom <= entity.BB.top + 10) {
+      this.y = entity.BB.top - this.height * 4;
+      this.velocity.y = -entity.boost;
+      this.fromJumpPad = true;
+
+      this.onGround = false;
+      this.coyoteTime = 0;
+      this.hasDoubleJump = true;
+      this.canDash = true;
+
+      entity.bounce();
+    }
+  }
+  #handleHazard(entity) {
+    if (entity.isHazard) this.die();
+  }
+
+  #handlePortal(entity) {
+    if (entity.isTeleporter) entity.teleport(this);
   }
   #updateAnimation() {
     if (this.dead) return;
@@ -459,9 +407,6 @@ class Player {
       if (this.velocity.y >= 0) this.fromJumpPad = false;
       if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
     }
-    // update position
-    this.x += this.velocity.x * TICK;
-    this.updateBB();
   }
 
   draw(ctx) {
