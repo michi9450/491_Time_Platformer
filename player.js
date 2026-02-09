@@ -62,6 +62,7 @@ class Player {
         // Time Jump
         this.canTimeJump = true;
         this.timeJumpTimer = 0;
+        this.wasTimeJumpPressed = false;
 
         //bounding box
         this.updateBB();
@@ -125,10 +126,6 @@ class Player {
         //timers
         this.coyoteTime -= TICK;
         this.jumpBuffer -= TICK;
-        if(!this.canTimeJump) {
-            if(this.timeJumpTimer > 0) this.timeJumpTimer -= TICK;
-            else this.canTimeJump = true;
-        }
 
         // Dash
         const dashJustPressed = dashPressed && !this.wasDashPressed;
@@ -259,14 +256,24 @@ class Player {
             }
         })
         
-        //Time skip mechanic
-        const timejumpJustPressed = timejumpPressed && !this.wastimejumpPressed;
-        this.wastimejumpPressed = timejumpPressed;
-        if(timejumpPressed && this.canTimeJump){
-            this.canTimeJump = false;
-            this.game.changeTime();
-            this.timeJumpTimer = TIME_JUMP_DURATION;
+        //Time skip mechanic (programmed same as dash - activates on press not on hold)
+        const timejumpJustPressed = timejumpPressed && !this.wasTimeJumpPressed;
+        this.wasTimeJumpPressed = timejumpPressed;
+        //timing
+        if (!this.canTimeJump) {
+            this.timeJumpTimer -= TICK;
+            if (this.timeJumpTimer <= 0) {
+                this.canTimeJump = true;
+            }
         }
+
+        // trigger
+        if (timejumpJustPressed && this.canTimeJump) {
+            this.canTimeJump = false;
+            this.timeJumpTimer = TIME_JUMP_DURATION;
+            this.game.changeTime();
+        }
+
 
         this.checkJumpPadCollision();
         // Check for portal collisions
