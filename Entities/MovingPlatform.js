@@ -26,6 +26,7 @@ class MovingPlatform {
 
         // Bounding box
         this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
+        this.isPlatform = true;
     }
 
     update() {
