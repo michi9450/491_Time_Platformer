@@ -181,6 +181,7 @@ class Player {
     // Check for hazard collisions
     this.checkHazardCollision();
 
+    this.checkLevel_Transition();
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
       this.respawn();
@@ -271,19 +272,22 @@ class Player {
     }
   }
 
-  // Respawn player at spawn point
-  respawn() {
-    if (!this.game.isPast) this.game.changeTime();
-    this.x = this.spawnX;
-    this.y = this.spawnY;
-    this.velocity = { x: 0, y: 0 };
-    this.dead = false;
-    this.state = "idle";
-    this.deathTimer = 0;
-    this.onGround = false;
-    this.hasDoubleJump = true;
-    this.canDash = true;
-    this.coyoteTime = 0;
+    checkLevel_Transition() {
+        const that = this;
+
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof level_transition) {
+                if(entity.BB && that.BB.collide(entity.BB)){
+                    // changes to level transitions stored level.
+                    entity.SM.loadnewLevel(entity.getlevel());
+                } 
+            }
+        });
+    }
+
+    // Trigger death state - Mario style pop up then fall
+    die() {
+        if (this.dead) return; // Already dead, don't trigger again
 
     // Reset all falling platforms
     this.game.getEntityList().forEach(function (entity) {
