@@ -12,6 +12,9 @@ class SceneManager {
         if(screen === "SceneTwo"){
             this.LoadScreen(SceneTwo, 0, 0);
         }
+        if(screen === "SceneThree"){
+            this.LoadScreen(SceneTwo, 0, 0);
+        }
     }
 
     clearEntities(){
