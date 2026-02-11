@@ -28,6 +28,15 @@ class MovingPlatform {
         this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
     }
 
+    reset() {
+        this.x = this.startX;
+        this.y = this.startY;
+        this.movingForward = true;
+        this.lastX = this.startX;
+        this.lastY = this.startY;
+        this.BB = new BoundingBox(this.x, this.y, this.width, this.height);
+    }
+
     update() {
         const TICK = this.game.clockTick;
 

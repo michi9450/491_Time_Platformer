@@ -394,11 +394,13 @@ class Player {
         this.canDash = true;
         this.coyoteTime = 0;
 
-        // Reset all falling platforms
-        this.game.getEntityList().forEach(function (entity) {
-            if (entity instanceof FallingPlatform) {
-                entity.reset();
-            }
+        // Reset all platforms in both timelines
+        [this.game.entitiesPast, this.game.entitiesPresent].forEach(function(list) {
+            list.forEach(function(entity) {
+                if (entity instanceof FallingPlatform || entity instanceof MovingPlatform) {
+                    entity.reset();
+                }
+            });
         });
         this.jumpBuffer = 0;
         this.updateBB();
