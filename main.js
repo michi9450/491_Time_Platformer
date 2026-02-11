@@ -76,7 +76,7 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.addEntityPast(new Spike(gameEngine, 1850, 550, 80, 20));
 	gameEngine.addEntityPast(new Spike(gameEngine, 1900, 550, 80, 20));
 	gameEngine.addEntityPast(new LaserBeam(gameEngine, 1000, 500, 200, "horizontal"));
-	gameEngine.addEntityPresent(new LaserBeam(gameEngine, 700, 300, 150, "vertical"));
+	gameEngine.addEntityPresent(new LaserBeam(gameEngine, 700, 150, 150, "vertical"));
 
 	//jump pads
 	gameEngine.addEntityPast(new JumpPad(gameEngine, 2500, 485));
