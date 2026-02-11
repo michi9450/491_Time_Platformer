@@ -118,7 +118,7 @@ class Player {
         //input keys
         const left = this.game.keys["KeyA"];
         const right = this.game.keys["KeyD"];
-        const jumpPressed = this.game.keys["Space"];
+        const jumpPressed = this.game.keys["Space"] || this.game.keys["KeyW"];
         const dashPressed = this.game.keys["ShiftLeft"];
         const timejumpPressed = this.game.keys["KeyM"];
 
@@ -266,6 +266,7 @@ class Player {
             this.canTimeJump = false;
             this.game.changeTime();
             this.timeJumpTimer = TIME_JUMP_DURATION;
+            this.checkDimensionCollision();
         }
 
         this.checkJumpPadCollision();
@@ -434,6 +435,66 @@ class Player {
         })
     }
 
+    checkDimensionCollision() {
+        const that = this;
+        let overlappingWalls = [];
+
+        // Find all overlapping walls in current dimension
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof invisible_collision &&
+                that.BB.collide(entity.BB)) {
+                overlappingWalls.push(entity);
+            }
+        });
+
+        if (overlappingWalls.length === 0) return;
+
+        // Find nearest wall if multiple overlaps
+        let nearestWall = overlappingWalls[0];
+        let minOverlap = Infinity;
+
+        overlappingWalls.forEach(function(wall) {
+            let overlap = that.BB.overlap(wall.BB);
+            let totalOverlap = Math.abs(overlap.x) + Math.abs(overlap.y);
+            if (totalOverlap < minOverlap) {
+                minOverlap = totalOverlap;
+                nearestWall = wall;
+            }
+        });
+
+        // Calculate which side to push to
+        let overlap = that.BB.overlap(nearestWall.BB);
+        let playerCenter = that.x + (that.width * 4) / 2;
+        let wallCenter = nearestWall.x + nearestWall.width / 2;
+
+        // Push to nearest edge based on overlap amount
+        if (Math.abs(overlap.x) < Math.abs(overlap.y)) {
+            // Horizontal push (less overlap = easier to push out)
+            if (playerCenter < wallCenter) {
+                // Push left
+                that.x = nearestWall.BB.left - (that.width * 4);
+            } else {
+                // Push right
+                that.x = nearestWall.BB.right;
+            }
+        } else {
+            // Vertical push (if more vertically overlapped)
+            if (that.y + (that.height * 4) / 2 < nearestWall.y + nearestWall.height / 2) {
+                // Push up
+                that.y = nearestWall.BB.top - (that.height * 4);
+            } else {
+                // Push down
+                that.y = nearestWall.BB.bottom;
+            }
+        }
+
+        // Update bounding box after position change
+        that.updateBB();
+
+        // Zero out velocity to prevent immediate movement after push
+        that.velocity.x = 0;
+        that.velocity.y = 0;
+    }
 
     draw(ctx) {
         const flip = this.facing === "left"; //changes animation direction
