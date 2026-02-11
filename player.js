@@ -337,75 +337,72 @@ class Player {
       } else this.velocity.x = -this.config.dashSpeed;
     }
 
-    if (this.dashTime > 0) {
-      this.dashTime -= TICK;
-      this.velocity.y = 0; // No gravity during dash
-    } else {
-      // horizontal
-      if (left && right && this.onGround) {
-        //both clicked and on the floor
-        this.#applyFriction(this.config.runDecel, TICK);
-      } else if (left) {
-        this.velocity.x -= this.config.runAccel * TICK;
-        this.facing = "left";
-      } else if (right) {
-        this.velocity.x += this.config.runAccel * TICK;
-        this.facing = "right";
-      } else {
-        // none clicked
-        this.#applyFriction(this.config.runDecel, TICK);
-      }
+    checkDimensionCollision() {
+        const that = this;
+        let overlappingWalls = [];
 
-      this.velocity.x = Math.max(
-        -this.config.maxRun,
-        Math.min(this.config.maxRun, this.velocity.x),
-      );
+        // Find all overlapping walls in current dimension
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof invisible_collision &&
+                that.BB.collide(entity.BB)) {
+                overlappingWalls.push(entity);
+            }
+        });
 
-      // jump
-      const jumpJustPressed = jumpPressed && !this.wasJumpPressed;
-      this.wasJumpPressed = jumpPressed;
-      if (jumpJustPressed) {
-        this.jumpBuffer = this.config.jumpBuffer;
-      }
+        if (overlappingWalls.length === 0) return;
 
-      if (this.jumpBuffer > 0) {
-        if (this.onGround || this.coyoteTime > 0) {
-          this.velocity.y = -this.config.jumpSpeed;
-          this.jumpBuffer = 0;
-          this.onGround = false;
-        } else if (this.hasDoubleJump) {
-          this.velocity.y = -this.config.jumpSpeed;
-          this.hasDoubleJump = false;
-          this.jumpBuffer = 0;
+        // Find nearest wall if multiple overlaps
+        let nearestWall = overlappingWalls[0];
+        let minOverlap = Infinity;
+
+        overlappingWalls.forEach(function(wall) {
+            let overlap = that.BB.overlap(wall.BB);
+            let totalOverlap = Math.abs(overlap.x) + Math.abs(overlap.y);
+            if (totalOverlap < minOverlap) {
+                minOverlap = totalOverlap;
+                nearestWall = wall;
+            }
+        });
+
+        // Calculate which side to push to
+        let overlap = that.BB.overlap(nearestWall.BB);
+        let playerCenter = that.x + (that.width * 4) / 2;
+        let wallCenter = nearestWall.x + nearestWall.width / 2;
+
+        // Push to nearest edge based on overlap amount
+        if (Math.abs(overlap.x) < Math.abs(overlap.y)) {
+            // Horizontal push (less overlap = easier to push out)
+            if (playerCenter < wallCenter) {
+                // Push left
+                that.x = nearestWall.BB.left - (that.width * 4);
+            } else {
+                // Push right
+                that.x = nearestWall.BB.right;
+            }
+        } else {
+            // Vertical push (if more vertically overlapped)
+            if (that.y + (that.height * 4) / 2 < nearestWall.y + nearestWall.height / 2) {
+                // Push up
+                that.y = nearestWall.BB.top - (that.height * 4);
+            } else {
+                // Push down
+                that.y = nearestWall.BB.bottom;
+            }
         }
-      }
 
-      // Variable jump height
-      if (!jumpPressed && this.velocity.y < 0 && !this.fromJumpPad) {
-        this.velocity.y *= this.config.jumpCut;
-      }
-      //Time skip mechanic (programmed same as dash - activates on press not on hold)
-      const timejumpJustPressed = timejumpPressed && !this.wasTimeJumpPressed;
-      this.wasTimeJumpPressed = timejumpPressed;
-      //timing
-      if (!this.canTimeJump) {
-        this.timeJumpTimer -= TICK;
-        if (this.timeJumpTimer <= 0) {
-          this.canTimeJump = true;
-        }
-      }
-      // trigger
-      if (timejumpJustPressed && this.canTimeJump) {
-        this.canTimeJump = false;
-        this.timeJumpTimer = this.config.timeJumpDuration;
-        this.game.changeTime();
-      }
+        // Update bounding box after position change
+        that.updateBB();
 
-      //Gravity
-      this.velocity.y += this.config.gravity * TICK;
-      this.velocity.y = Math.min(this.velocity.y, this.config.maxFall);
-      if (this.velocity.y >= 0) this.fromJumpPad = false;
-      if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
+        // Zero out velocity to prevent immediate movement after push
+        that.velocity.x = 0;
+        that.velocity.y = 0;
+    }
+
+    draw(ctx) {
+        const flip = this.facing === "left"; //changes animation direction
+        this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
+        // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
+        this.BB.draw(ctx);
     }
   }
 
