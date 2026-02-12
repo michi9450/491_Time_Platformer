@@ -124,6 +124,7 @@ class Player {
     }
 
     this.#handleInput(TICK);
+    this.velocity.x 
     this.x += this.velocity.x * TICK;
     this.updateBB();
 
@@ -317,7 +318,7 @@ class Player {
     //input keys
     const left = this.game.keys["KeyA"];
     const right = this.game.keys["KeyD"];
-    const jumpPressed = this.game.keys["Space"];
+    const jumpPressed = this.game.keys["Space"] || this.game.keys["KeyW"];
     const dashPressed = this.game.keys["ShiftLeft"];
     const timejumpPressed = this.game.keys["KeyM"];
 
@@ -336,8 +337,80 @@ class Player {
         this.velocity.x = this.config.dashSpeed;
       } else this.velocity.x = -this.config.dashSpeed;
     }
+    if (this.dashTime > 0) {
+      this.dashTime -= TICK;
+      this.velocity.y = 0; // No gravity during dash
+    } else {
+      // horizontal
+      if (left && right && this.onGround) {
+        //both clicked and on the floor
+        this.#applyFriction(this.config.runDecel, TICK);
+      } else if (left) {
+        this.velocity.x -= this.config.runAccel * TICK;
+        this.facing = "left";
+      } else if (right) {
+        this.velocity.x += this.config.runAccel * TICK;
+        this.facing = "right";
+      } else {
+        // none clicked
+        this.#applyFriction(this.config.runDecel, TICK);
+      }
 
-    checkDimensionCollision() {
+      this.velocity.x = Math.max(
+        -this.config.maxRun,
+        Math.min(this.config.maxRun, this.velocity.x),
+      );
+
+      // jump
+      const jumpJustPressed = jumpPressed && !this.wasJumpPressed;
+      this.wasJumpPressed = jumpPressed;
+      if (jumpJustPressed) {
+        this.jumpBuffer = this.config.jumpBuffer;
+      }
+
+      if (this.jumpBuffer > 0) {
+        if (this.onGround || this.coyoteTime > 0) {
+          this.velocity.y = -this.config.jumpSpeed;
+          this.jumpBuffer = 0;
+          this.onGround = false;
+        } else if (this.hasDoubleJump) {
+          this.velocity.y = -this.config.jumpSpeed;
+          this.hasDoubleJump = false;
+          this.jumpBuffer = 0;
+        }
+      }
+
+      // Variable jump height
+      if (!jumpPressed && this.velocity.y < 0 && !this.fromJumpPad) {
+        this.velocity.y *= this.config.jumpCut;
+      }
+      //Time skip mechanic (programmed same as dash - activates on press not on hold)
+      const timejumpJustPressed = timejumpPressed && !this.wasTimeJumpPressed;
+      this.wasTimeJumpPressed = timejumpPressed;
+      //timing
+      if (!this.canTimeJump) {
+        this.timeJumpTimer -= TICK;
+        if (this.timeJumpTimer <= 0) {
+          this.canTimeJump = true;
+        }
+      }
+      // trigger
+      if (timejumpJustPressed && this.canTimeJump) {
+        this.canTimeJump = false;
+        this.timeJumpTimer = this.config.timeJumpDuration;
+        this.game.changeTime();
+        this.checkDimensionCollision();
+      }
+
+      //Gravity
+      this.velocity.y += this.config.gravity * TICK;
+      this.velocity.y = Math.min(this.velocity.y, this.config.maxFall);
+      if (this.velocity.y >= 0) this.fromJumpPad = false;
+      if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
+    }
+  }
+
+    checkDimensionCollision() {//add threshold for how far into an object you need to be before it pushes you
         const that = this;
         let overlappingWalls = [];
 
@@ -397,14 +470,6 @@ class Player {
         that.velocity.x = 0;
         that.velocity.y = 0;
     }
-
-    draw(ctx) {
-        const flip = this.facing === "left"; //changes animation direction
-        this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
-        // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
-        this.BB.draw(ctx);
-    }
-  }
 
   draw(ctx) {
     const flip = this.facing === "left"; //changes animation direction
