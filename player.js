@@ -463,13 +463,50 @@ class Player {
             }
         }
 
-        // Update bounding box after position change
-        that.updateBB();
+      this.velocity.x = Math.max(
+        -this.config.maxRun,
+        Math.min(this.config.maxRun, this.velocity.x),
+      );
 
-        // Zero out velocity to prevent immediate movement after push
-        that.velocity.x = 0;
-        that.velocity.y = 0;
-    }
+      // jump
+      const jumpJustPressed = jumpPressed && !this.wasJumpPressed;
+      this.wasJumpPressed = jumpPressed;
+      if (jumpJustPressed) {
+        this.jumpBuffer = this.config.jumpBuffer;
+      }
+
+      if (this.jumpBuffer > 0) {
+        if (this.onGround || this.coyoteTime > 0) {
+          this.velocity.y = -this.config.jumpSpeed;
+          this.jumpBuffer = 0;
+          this.onGround = false;
+        } else if (this.hasDoubleJump) {
+          this.velocity.y = -this.config.jumpSpeed;
+          this.hasDoubleJump = false;
+          this.jumpBuffer = 0;
+        }
+      }
+
+      // Variable jump height
+      if (!jumpPressed && this.velocity.y < 0 && !this.fromJumpPad) {
+        this.velocity.y *= this.config.jumpCut;
+      }
+      //Time skip mechanic (programmed same as dash - activates on press not on hold)
+      const timejumpJustPressed = timejumpPressed && !this.wasTimeJumpPressed;
+      this.wasTimeJumpPressed = timejumpPressed;
+      //timing
+      if (!this.canTimeJump) {
+        this.timeJumpTimer -= TICK;
+        if (this.timeJumpTimer <= 0) {
+          this.canTimeJump = true;
+        }
+      }
+      // trigger
+      if (timejumpJustPressed && this.canTimeJump) {
+        this.canTimeJump = false;
+        this.timeJumpTimer = this.config.timeJumpDuration;
+        this.game.changeTime();
+      }
 
   draw(ctx) {
     const flip = this.facing === "left"; //changes animation direction
