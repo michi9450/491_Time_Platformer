@@ -149,11 +149,10 @@ class SceneManager {
                 }
             }
         }
-
-        this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_1.png", 0.6, 100, 3, false, 0));
-	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_2.png", 0.4, 50, 3, false, 0));
-	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_3.png", 0.3, 0, 3, false, 0));
-	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/cloud_lonely.png", 0.07, 0, 3, false, 0));
+        this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_1.png", 0.6, 100, 3, false, 0, 0.3));
+	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_2.png", 0.4, 50, 3, false, 0, 0.15));
+	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_3.png", 0.3, 0, 3, false, 0, 0.1));
+	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/cloud_lonely.png", 0.07, 0, 3, false, 0, 0.05));
 	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/glacial_mountains.png", 0.1, 0, 3, false, 0));
 	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_bg.png", 0.05, 0, 3, false, 0));
 	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/sky.png", 0, 0, 5, false, 0));
