@@ -5,7 +5,7 @@ class SceneManager {
         this.lives = 3; //SceneManager will control amount of lives player has
 
 
-        this.LoadScreen(SceneOne, 0, 0);
+        this.LoadScreen(SceneThree, 0, 0);
     }
 
     loadnewLevel(screen){//change this to a hashmap later
