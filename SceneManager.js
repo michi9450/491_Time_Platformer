@@ -5,7 +5,7 @@ class SceneManager {
         this.lives = 3; //SceneManager will control amount of lives player has
 
 
-        this.LoadScreen(SceneOne, 0, 0);
+        this.LoadScreen(SceneFour, 0, 0);
     }
 
     loadnewLevel(screen){//change this to a hashmap later
@@ -13,7 +13,10 @@ class SceneManager {
             this.LoadScreen(SceneTwo, 0, 0);
         }
         if(screen === "SceneThree"){
-            this.LoadScreen(SceneTwo, 0, 0);
+            this.LoadScreen(SceneThree, 0, 0);
+        }
+        if(screen === "SceneFour"){
+            this.LoadScreen(SceneFour, 128, 192);
         }
     }
 
@@ -38,10 +41,15 @@ class SceneManager {
         this.clearEntities();
 
        // this.game.camera = new Camera(this.game, this.ctx.canvas.width, this.ctx.canvas.height);
-       this.player = new Player(gameEngine, 100, 400) // creates player object
+       if(this.screen.player) {
+        var ent = this.screen.player[0];
+        this.player = new Player(gameEngine, ent.x, ent.y) // creates player object
         this.game.player = this.player;
         this.game.addEntityPast(this.player);
 	    this.game.addEntityPresent(this.player);
+       }
+       
+        
 
         if(this.screen.collisions) {
             for (var i = 0; i < this.screen.collisions.length; i++) {
@@ -149,11 +157,10 @@ class SceneManager {
                 }
             }
         }
-
-        this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_1.png", 0.6, 100, 3, false, 0));
-	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_2.png", 0.4, 50, 3, false, 0));
-	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_3.png", 0.3, 0, 3, false, 0));
-	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/cloud_lonely.png", 0.07, 0, 3, false, 0));
+        this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_1.png", 0.6, 100, 3, false, 0, 0.3));
+	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_2.png", 0.4, 50, 3, false, 0, 0.15));
+	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_mg_3.png", 0.3, 0, 3, false, 0, 0.1));
+	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/cloud_lonely.png", 0.07, 0, 3, false, 0, 0.05));
 	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/glacial_mountains.png", 0.1, 0, 3, false, 0));
 	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/clouds_bg.png", 0.05, 0, 3, false, 0));
 	    this.game.addEntityPast(new ParallaxLayer(this.game, "sprites/backgrounds/snowy mountains/sky.png", 0, 0, 5, false, 0));

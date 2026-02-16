@@ -26,7 +26,7 @@ class Player {
         32,
         32,
         6,
-        0.15,
+        0.125,
       ),
       jump: new Animator(
         ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
