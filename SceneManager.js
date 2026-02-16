@@ -5,7 +5,7 @@ class SceneManager {
         this.lives = 3; //SceneManager will control amount of lives player has
 
 
-        this.LoadScreen(SceneThree, 0, 0);
+        this.LoadScreen(SceneFour, 0, 0);
     }
 
     loadnewLevel(screen){//change this to a hashmap later
@@ -13,7 +13,10 @@ class SceneManager {
             this.LoadScreen(SceneTwo, 0, 0);
         }
         if(screen === "SceneThree"){
-            this.LoadScreen(SceneTwo, 0, 0);
+            this.LoadScreen(SceneThree, 0, 0);
+        }
+        if(screen === "SceneFour"){
+            this.LoadScreen(SceneFour, 128, 192);
         }
     }
 
@@ -38,10 +41,15 @@ class SceneManager {
         this.clearEntities();
 
        // this.game.camera = new Camera(this.game, this.ctx.canvas.width, this.ctx.canvas.height);
-       this.player = new Player(gameEngine, 100, 400) // creates player object
+       if(this.screen.player) {
+        var ent = this.screen.player[0];
+        this.player = new Player(gameEngine, ent.x, ent.y) // creates player object
         this.game.player = this.player;
         this.game.addEntityPast(this.player);
 	    this.game.addEntityPresent(this.player);
+       }
+       
+        
 
         if(this.screen.collisions) {
             for (var i = 0; i < this.screen.collisions.length; i++) {
