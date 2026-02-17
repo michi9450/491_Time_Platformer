@@ -159,3 +159,9 @@ var SceneFour = {
     parallax: [{dimension: 0, file: "sprites/levels/screen_4_past.png"},
             {dimension: 1, file: "sprites/levels/screen_4_present.png"}]
 };
+var SceneFive = {
+    player:[{x:100, y:400}],
+    collisions:[],
+    parallax: [{dimension: 0, file: "sprites/levels/screen_5_past.png"},
+            {dimension: 1, file: "sprites/levels/screen_5_present.png"}]
+};
