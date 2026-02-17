@@ -1,9 +1,8 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Dimension shift - Red 5 prototype</title>
+    <title>Dimension Shift – Red 5 Prototype</title>
   
     <script type="text/javascript" src="./assetmanager.js"></script>
     <script type="text/javascript" src="./timer.js"></script>
@@ -26,20 +25,57 @@
     <script type="text/javascript" src="./SceneManager.js"></script>
     <script type="text/javascript" src="./Level1.js"></script>
     <script type="text/javascript" src="./main.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: rgb(34, 27, 41);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #gameWorld {
+            background: white;
+            border: 1px solid black;
+            display: block;
+            max-width: 100vw;
+            max-height: 100vh;
+            width: auto;
+            height: auto;
+        }
+
+        .instructions {
+            margin-top: 15px;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 300;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="gameWorld" width="1600" height="700" style="background: white; border: 1px solid black" tabindex="0" autofocus></canvas>
+    <canvas id="gameWorld" width="1600" height="700" tabindex="0" autofocus></canvas>
 
-    <p>Prototype for Dimension shift game</p>
-    <p>Controls are:</p>
-    <p>
+    <div class="instructions">
+        <h2>Dimension Shift – Prototype</h2>
+        <p><strong>Controls:</strong></p>
         <ol>
-            <li>A and D move right and left</li>
-            <li>space or W is to jump, press again to double jump</li>
-            <li>m switches dimensions</li>
-            <li>shift is dash</li>
-        </oi>
-
-    </p>
+            <li><strong>A</strong> and <strong>D</strong> – Move left and right</li>
+            <li><strong>W</strong> or <strong>Space</strong> – Jump (press again to double jump)</li>
+            <li><strong>M</strong> – Switch dimensions</li>
+            <li><strong>Shift</strong> – Dash</li>
+        </ol>
+    </div>
 </body>
 </html>
