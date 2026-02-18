@@ -73,6 +73,7 @@ class Player {
       dashSpeed: 900, //horizontal dash speed
       dashDuration: 0.2, // how long the dash lasts in seconds
       timeJumpDuration: 0.2, // how long before the player can time jump again
+      levelTransitionDelay: .5 //how long it waits before checking level transition
     };
     // Physics
     this.velocity = { x: 0, y: 0 };
@@ -104,6 +105,9 @@ class Player {
     this.timeJumpTimer = 0;
     this.wasTimeJumpPressed = false;
 
+    //leveltransition timer
+    this.levelTransitionDelay = 0;
+
     //bounding box
     this.updateBB();
   }
@@ -128,12 +132,12 @@ class Player {
     this.x += this.velocity.x * TICK;
     this.updateBB();
 
-    this.#handleCollisions("x");
+    this.#handleCollisions("x", TICK);
 
     this.y += this.velocity.y * TICK;
     this.updateBB();
     this.onGround = false;
-    this.#handleCollisions("y");
+    this.#handleCollisions("y", TICK);
 
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
@@ -192,8 +196,10 @@ class Player {
     }
   }
 
-  #handleLevelTransition(entity) {
-    if (entity.isLevelTransition) {
+  #handleLevelTransition(entity, TICK) {
+    this.levelTransitionDelay += TICK;
+    if (entity.isLevelTransition && this.levelTransitionDelay > this.config.levelTransitionDelay) {
+      this.levelTransitionDelay = 0;
       entity.SM.loadnewLevel(entity.getlevel());
     }
   }
@@ -258,7 +264,7 @@ class Player {
       this.velocity.y = 0;
     }
   }
-  #handleCollisions(axis) {
+  #handleCollisions(axis, TICK) {
     for (const entity of this.game.getEntityList()) {
       if (!entity.BB) continue;
       if (!this.BB.collide(entity.BB)) continue;
@@ -272,7 +278,7 @@ class Player {
 
       this.#handleHazard(entity);
       this.#handlePortal(entity);
-      this.#handleLevelTransition(entity);
+      this.#handleLevelTransition(entity, TICK);
     }
   }
   #handleJumpPad(entity) {

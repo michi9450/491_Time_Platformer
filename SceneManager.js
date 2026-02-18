@@ -38,7 +38,7 @@ class SceneManager {
 
         in theory we will have a level.js for each level which will hold var for each screen which will be loaded by this method.
     */
-    LoadScreen(screen, x, y){
+    LoadScreen(screen){
         // this.level = level;
         this.screen = screen;
         this.clearEntities();
