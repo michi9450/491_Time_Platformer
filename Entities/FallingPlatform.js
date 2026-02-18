@@ -19,6 +19,7 @@ class FallingPlatform {
 
         // For marking removal from world
         this.removeFromWorld = false;
+        this.isPlatform = true;
     }
 
     activate() {

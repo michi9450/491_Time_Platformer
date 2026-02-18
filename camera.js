@@ -13,8 +13,8 @@ class Camera {
         this.deadZoneY = height * 0.4;
 
         // temporary before we get level objects going
-        this.worldWidth = 3000;
-        this.worldHeight = 1000;
+        this.worldWidth = 3200;
+        this.worldHeight = 900;
     }
     update() {
     const player = this.game.player;

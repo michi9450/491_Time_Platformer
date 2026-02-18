@@ -7,7 +7,7 @@ class Spike {
         this.animator = new Animator(
             ASSET_MANAGER.getAsset("sprites/Trap_Spike.png"),
             0, 0,           // xStart, yStart
-            128, 74,        // frame width (includes whitespace), frame height
+            45, 74,        // frame width (includes whitespace), frame height
             15,             // frameCount
             0.025             // frameDuration (animation speed)
         );
