@@ -317,7 +317,7 @@ class Player {
     //input keys
     const left = this.game.keys["KeyA"];
     const right = this.game.keys["KeyD"];
-    const jumpPressed = this.game.keys["Space"];
+    const jumpPressed = this.game.keys["Space"] || this.game.keys["KeyW"];
     const dashPressed = this.game.keys["ShiftLeft"];
     const timejumpPressed = this.game.keys["KeyM"];
 
