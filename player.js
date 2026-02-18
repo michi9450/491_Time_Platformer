@@ -26,7 +26,7 @@ class Player {
         32,
         32,
         6,
-        0.15,
+        0.125,
       ),
       jump: new Animator(
         ASSET_MANAGER.getAsset("sprites/adventurer-Sheet.png"),
@@ -124,6 +124,7 @@ class Player {
     }
 
     this.#handleInput(TICK);
+    this.velocity.x 
     this.x += this.velocity.x * TICK;
     this.updateBB();
 
@@ -336,7 +337,6 @@ class Player {
         this.velocity.x = this.config.dashSpeed;
       } else this.velocity.x = -this.config.dashSpeed;
     }
-
     if (this.dashTime > 0) {
       this.dashTime -= TICK;
       this.velocity.y = 0; // No gravity during dash
@@ -399,6 +399,7 @@ class Player {
         this.canTimeJump = false;
         this.timeJumpTimer = this.config.timeJumpDuration;
         this.game.changeTime();
+        this.checkDimensionCollision();
       }
 
       //Gravity
@@ -408,6 +409,68 @@ class Player {
       if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
     }
   }
+
+    checkDimensionCollision() {//add threshold for how far into an object you need to be before it pushes you
+        const that = this;
+        let overlappingWalls = [];
+
+        // Find all overlapping walls in current dimension
+        this.game.getEntityList().forEach(function (entity) {
+            if (entity instanceof invisible_collision &&
+                that.BB.collide(entity.BB)) {
+                overlappingWalls.push(entity);
+            }
+        });
+
+        if (overlappingWalls.length === 0) return;
+
+        // Find nearest wall if multiple overlaps
+        let nearestWall = overlappingWalls[0];
+        let minOverlap = Infinity;
+
+        overlappingWalls.forEach(function(wall) {
+            let overlap = that.BB.overlap(wall.BB);
+            let totalOverlap = Math.abs(overlap.x) + Math.abs(overlap.y);
+            if (totalOverlap < minOverlap) {
+                minOverlap = totalOverlap;
+                nearestWall = wall;
+            }
+        });
+
+        // Calculate which side to push to
+        let overlap = that.BB.overlap(nearestWall.BB);
+        let playerCenter = that.x + (that.width * 4) / 2;
+        let wallCenter = nearestWall.x + nearestWall.width / 2;
+
+        // Push to nearest edge based on overlap amount
+        if (Math.abs(overlap.x) < Math.abs(overlap.y)) {
+            // Horizontal push (less overlap = easier to push out)
+            if (playerCenter < wallCenter) {
+                // Push left
+                that.x = nearestWall.BB.left - (that.width * 4);
+            } else {
+                // Push right
+                that.x = nearestWall.BB.right;
+            }
+        } else {
+            // Vertical push (if more vertically overlapped)
+            if (that.y + (that.height * 4) / 2 < nearestWall.y + nearestWall.height / 2) {
+                // Push up
+                that.y = nearestWall.BB.top - (that.height * 4);
+            } else {
+                // Push down
+                that.y = nearestWall.BB.bottom;
+            }
+        }
+
+        // Update bounding box after position change
+        that.updateBB();
+
+        // Zero out velocity to prevent immediate movement after push
+        that.velocity.x = 0;
+        that.velocity.y = 0;
+    }
+
 
   draw(ctx) {
     const flip = this.facing === "left"; //changes animation direction
