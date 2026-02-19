@@ -156,12 +156,54 @@ var SceneFour = {
 
     {dimension: 1, x: 1344, y: 384, width: 64, height: 320}],
     //spike: [{dimension: 0, x: 390, y: 310, width: 32, height: 32}], make sideways
+    falling: [{dimension: 0, x: 2040, y: 700, width: 128, height: 32, delay: .5},
+        {dimension: 1, x: 1860, y: 460, width: 128, height: 32, delay: .5}
+    ],
     parallax: [{dimension: 0, file: "sprites/levels/screen_4_past.png"},
-            {dimension: 1, file: "sprites/levels/screen_4_present.png"}]
+            {dimension: 1, file: "sprites/levels/screen_4_present.png"}],
+    transition: [{dimension: 0, x: 3040, y: 800, width: 60, height: 60, level: "SceneFive"},
+                {dimension: 1, x: 3040, y: 800, width: 60, height: 60, level: "SceneFive"}]
 };
 var SceneFive = {
-    player:[{x:100, y:400}],
-    collisions:[],
+    player:[{x:100, y:700}],
+    collisions:[{dimension: 0, x: 0, y: 0, width: 1152, height: 64},
+    {dimension: 0, x: 1152, y: 64, width: 2048, height: 192},
+    {dimension: 0, x: 0, y: 64, width: 64, height: 896},
+    {dimension: 0, x: 64, y: 64, width: 512, height: 640},
+    {dimension: 0, x: 64, y: 896, width: 320, height: 64},
+    {dimension: 0, x: 576, y: 896, width: 192, height: 64},
+    {dimension: 0, x: 768, y: 256, width: 192, height: 704},
+    {dimension: 0, x: 1152, y: 256, width: 320, height: 384},
+    {dimension: 0, x: 1152, y: 832, width: 320, height: 128},
+    {dimension: 0, x: 2816, y: 512, width: 384, height: 448},
+    {dimension: 0, x: 3136, y: 256, width: 64, height: 256},
+
+    {dimension: 0, x: 576, y: 640, width: 192, height: 64},
+    {dimension: 0, x: 576, y: 320, width: 192, height: 64},
+    {dimension: 0, x: 960, y: 576, width: 192, height: 64},
+    {dimension: 0, x: 1152, y: 640, width: 64, height: 192},
+    {dimension: 0, x: 1728, y: 768, width: 192, height: 64},
+    {dimension: 0, x: 2432, y: 768, width: 192, height: 64},
+    {dimension: 0, x: 2176, y: 256, width: 64, height: 448},
+    
+    {dimension: 1, x: 0, y: 0, width: 1152, height: 64},
+    {dimension: 1, x: 1152, y: 64, width: 2048, height: 192},
+    {dimension: 1, x: 0, y: 64, width: 64, height: 896},
+    {dimension: 1, x: 64, y: 64, width: 512, height: 640},
+    {dimension: 1, x: 64, y: 896, width: 320, height: 64},
+    {dimension: 1, x: 576, y: 896, width: 192, height: 64},
+    {dimension: 1, x: 768, y: 256, width: 192, height: 704},
+    {dimension: 1, x: 1152, y: 256, width: 320, height: 384},
+    {dimension: 1, x: 1152, y: 832, width: 320, height: 128},
+    {dimension: 1, x: 2816, y: 512, width: 384, height: 448},
+    {dimension: 1, x: 3136, y: 256, width: 64, height: 256},
+
+    {dimension: 1, x: 1024, y: 896, width: 64, height: 64},
+    {dimension: 1, x: 1792, y: 768, width: 64, height: 64},
+    {dimension: 1, x: 2496, y: 768, width: 64, height: 64},
+    {dimension: 1, x: 2816, y: 256, width: 64, height: 256}
+],
+    //spike: [{dimension: 0, x: 390, y: 310, width: 32, height: 32}]
     parallax: [{dimension: 0, file: "sprites/levels/screen_5_past.png"},
             {dimension: 1, file: "sprites/levels/screen_5_present.png"}]
 };
