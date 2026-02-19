@@ -110,6 +110,8 @@ class Player {
 
     //bounding box
     this.updateBB();
+    //sound help
+    this.runningSound = null;
   }
 
   updateBB() {
@@ -171,6 +173,8 @@ class Player {
         entity.reset();
       }
     });
+    this.#stopRunSound();
+    this.game.sound.play("death", {volume: 0.8});
     this.jumpBuffer = 0;
     this.updateBB();
   }
@@ -200,6 +204,7 @@ class Player {
     this.levelTransitionDelay += TICK;
     if (entity.isLevelTransition && this.levelTransitionDelay > this.config.levelTransitionDelay) {
       this.levelTransitionDelay = 0;
+      this.#stopRunSound();
       entity.SM.loadnewLevel(entity.getlevel());
     }
   }
@@ -220,6 +225,9 @@ class Player {
         entity.reset();
       }
     });
+    this.#stopRunSound();
+    this.game.sound.play("death", {volume: 0.8});
+    
     this.jumpBuffer = 0;
     this.updateBB();
   }
@@ -352,15 +360,17 @@ class Player {
         //both clicked and on the floor
         this.#applyFriction(this.config.runDecel, TICK);
       } else if (left) {
-        this.velocity.x -= this.config.runAccel * TICK;
-        this.facing = "left";
-      } else if (right) {
-        this.velocity.x += this.config.runAccel * TICK;
-        this.facing = "right";
-      } else {
-        // none clicked
-        this.#applyFriction(this.config.runDecel, TICK);
-      }
+    this.velocity.x -= this.config.runAccel * TICK;
+    this.facing = "left";
+    this.#startRunSound();
+} else if (right) {
+    this.velocity.x += this.config.runAccel * TICK;
+    this.facing = "right";
+    this.#startRunSound();
+} else {
+    this.#stopRunSound();
+    this.#applyFriction(this.config.runDecel, TICK);
+}
 
       this.velocity.x = Math.max(
         -this.config.maxRun,
@@ -373,16 +383,18 @@ class Player {
       if (jumpJustPressed) {
         this.jumpBuffer = this.config.jumpBuffer;
       }
-
       if (this.jumpBuffer > 0) {
         if (this.onGround || this.coyoteTime > 0) {
           this.velocity.y = -this.config.jumpSpeed;
           this.jumpBuffer = 0;
           this.onGround = false;
+          this.game.sound.play("jump", { pitchVar: 0.05, volume: .3 });
+          this.#stopRunSound();
         } else if (this.hasDoubleJump) {
           this.velocity.y = -this.config.jumpSpeed;
           this.hasDoubleJump = false;
           this.jumpBuffer = 0;
+          this.game.sound.play("jump", { pitchVar: 0.05,volume: .3 });
         }
       }
 
@@ -415,6 +427,16 @@ class Player {
       if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
     }
   }
+  #startRunSound() {
+    if (this.runningSoundHandle || !this.onGround) return; // already playing or in air
+    this.runningSoundHandle = this.game.sound.play("run", { loop: true, volume: 0.6 });
+}
+
+#stopRunSound() {
+    if (!this.runningSoundHandle) return;
+    this.runningSoundHandle.stop(0.05); // tiny fade out so it doesn't click
+    this.runningSoundHandle = null;
+}
 
     checkDimensionCollision() {//add threshold for how far into an object you need to be before it pushes you
         const that = this;
