@@ -1,22 +1,28 @@
 class SceneManager {
-    constructor(game) {
+    constructor(game, startingScene) {
         this.game = game;
         //this.game.camera = this; scene manager controls camera however, going to add this later
         this.lives = 3; //SceneManager will control amount of lives player has
 
-
-        this.LoadScreen(SceneThree, 0, 0);
+        // Load the specified starting scene, default to SceneOne if not provided
+        const initialScene = startingScene || SceneOne;
+        const spawnX = (initialScene === SceneFour) ? 128 : 0;
+        const spawnY = (initialScene === SceneFour) ? 192 : 0;
+        this.LoadScreen(initialScene, spawnX, spawnY);
     }
 
     loadnewLevel(screen){//change this to a hashmap later
         if(screen === "SceneTwo"){
-            this.LoadScreen(SceneTwo, 0, 0);
+            this.LoadScreen(SceneTwo);
         }
         if(screen === "SceneThree"){
-            this.LoadScreen(SceneThree, 0, 0);
+            this.LoadScreen(SceneThree);
         }
         if(screen === "SceneFour"){
-            this.LoadScreen(SceneFour, 128, 192);
+            this.LoadScreen(SceneFour);
+        }
+        if(screen === "SceneFive"){
+            this.LoadScreen(SceneFive);
         }
     }
 
@@ -35,7 +41,7 @@ class SceneManager {
 
         in theory we will have a level.js for each level which will hold var for each screen which will be loaded by this method.
     */
-    LoadScreen(screen, x, y){
+    LoadScreen(screen){
         // this.level = level;
         this.screen = screen;
         this.clearEntities();
