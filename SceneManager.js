@@ -12,6 +12,26 @@ class SceneManager {
     }
 
     loadnewLevel(screen){//change this to a hashmap later
+        // Map scene names to level numbers
+        const sceneToLevel = {
+            "SceneTwo": 2,
+            "SceneThree": 3,
+            "SceneFour": 4,
+            "SceneFive": 5
+        };
+
+        // Check if we're trying to load a level beyond the final level
+        const levelNumber = sceneToLevel[screen];
+        const finalLevel = 3; // Change to 5 when more levels are complete
+
+        if (levelNumber && levelNumber > finalLevel) {
+            // Show congratulations screen instead of loading next level
+            if (typeof window.showCongratsScreen === 'function') {
+                window.showCongratsScreen();
+            }
+            return;
+        }
+
         if(screen === "SceneTwo"){
             this.LoadScreen(SceneTwo, 0, 0);
         }
@@ -20,6 +40,9 @@ class SceneManager {
         }
         if(screen === "SceneFour"){
             this.LoadScreen(SceneFour, 128, 192);
+        }
+        if(screen === "SceneFive"){
+            this.LoadScreen(SceneFive, 0, 0);
         }
     }
 
