@@ -25,12 +25,17 @@ class GameEngine {
         this.options = options || {
             debugging: false,
         };
+
+        //sound
+        this.sound = new AudioManager();
     };
 
     init(ctx) {
         this.ctx = ctx;
         this.startInput();
         this.timer = new Timer();
+        this.ctx.canvas.addEventListener("keydown", () => this.sound.resume(), { once: true });
+        this.ctx.canvas.addEventListener("click",   () => this.sound.resume(), { once: true });
     };
 
     start() {
