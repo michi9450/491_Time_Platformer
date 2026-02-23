@@ -100,6 +100,15 @@ class GameEngine {
         else return this.entitiesPresent;
     }
 
+    getPastList(){
+         return this.entitiesPast;
+    }
+
+    getPresentList(){
+        return this.entitiesPresent;
+    }
+
+
     changeTime() {
         if(this.isPast) this.isPast = false;
         else this.isPast = true;
