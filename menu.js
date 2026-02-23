@@ -99,6 +99,36 @@ document
 // Initialize level grid on page load
 generateLevelGrid();
 
+const muteBtn = document.getElementById("mutebutton");
+const volumeSlider = document.getElementById("volumeSlider");
+let isMuted = false;
+let lastVolume = 1;
+function setVolume(value) {
+    if (window.GAME_ENGINE && window.GAME_ENGINE.sound) {
+      const sound = window.GAME_ENGINE.sound;
+      if (sound.masterGain) {
+        sound.masterGain.gain.value = value;
+      }
+    }
+    volumeSlider.value = value;
+    muteBtn.textContent = value === 0 ? "🔇" : value < 0.5 ? "🔉" : "🔊";
+}
+muteBtn.addEventListener("click", () => {
+    if (isMuted) {
+        isMuted = false;
+        setVolume(lastVolume);
+    } else {
+        isMuted = true;
+        lastVolume = parseFloat(volumeSlider.value);
+        setVolume(0);
+    }
+});
+
+volumeSlider.addEventListener("input", () => {
+    isMuted = false;
+    lastVolume = parseFloat(volumeSlider.value);
+    setVolume(lastVolume);
+});
 function resizeGame() {
     const baseWidth = 1600;
     const baseHeight = 700;
@@ -123,6 +153,5 @@ function resizeGame() {
     gameContainer.style.left = `${(windowWidth - scaledWidth) / 2}px`;
     gameContainer.style.top = `${(windowHeight - scaledHeight) / 2}px`;
 }
-
 window.addEventListener("resize", resizeGame);
 window.addEventListener("load", resizeGame);

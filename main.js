@@ -1,4 +1,5 @@
 const gameEngine = new GameEngine();
+window.GAME_ENGINE = gameEngine;
 
 const ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload("sprites/backgrounds/grunge/bg.png");

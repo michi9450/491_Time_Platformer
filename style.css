@@ -326,3 +326,29 @@ canvas {
 button {
     font-family: inherit;
 }
+#volumeControl {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+#muteBtn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+#volumeSlider {
+    width: 80px;
+    accent-color: #00d9ff;
+    cursor: pointer;
+}

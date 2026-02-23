@@ -495,8 +495,8 @@ class Player {
         that.updateBB();
 
         // Zero out velocity to prevent immediate movement after push
-        that.velocity.x = 0;
-        that.velocity.y = 0;
+        // that.velocity.x = 0;
+        // that.velocity.y = 0;
     }
 
   draw(ctx) {
