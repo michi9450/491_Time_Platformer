@@ -507,6 +507,6 @@ class Player {
     const flip = this.facing === "left"; //changes animation direction
     this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
     // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
-    this.BB.draw(ctx);
+    //this.BB.draw(ctx);
   }
 }

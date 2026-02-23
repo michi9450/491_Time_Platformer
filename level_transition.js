@@ -32,8 +32,8 @@ class level_transition{
 
     draw(ctx) {
         ctx.strokeStyle= "red";
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
-        this.BB.draw(ctx);
+        //ctx.strokeRect(this.x, this.y, this.width, this.height);
+        //this.BB.draw(ctx);
 
         // Calculate current frame (0-5)
         const currentFrame = Math.floor(this.elapsedTime / this.frameDuration) % this.frameCount;
