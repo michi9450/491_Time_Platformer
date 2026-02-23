@@ -96,6 +96,13 @@ document
   .getElementById("backToMenuBtn")
   .addEventListener("click", goBackToMenu);
 
+  document.getElementById('playAgainBtn').addEventListener('click', () => {
+            location.href = location.pathname + '?level=1';
+        });
+
+        document.getElementById('backToMainMenu').addEventListener('click', () => {
+            location.href = location.pathname;
+        });
 // Initialize level grid on page load
 generateLevelGrid();
 
@@ -155,3 +162,9 @@ function resizeGame() {
 }
 window.addEventListener("resize", resizeGame);
 window.addEventListener("load", resizeGame);
+
+// Show congratulations screen
+        window.showCongratsScreen = function() {
+            document.getElementById('backToMenuBtn').classList.add('hidden');
+            document.getElementById('congratsScreen').classList.remove('hidden');
+        };

@@ -80,9 +80,7 @@
             <input type="range" id="volumeSlider" min="0" max = "1" step="0.01" value="1">
         </div>
     </div>
-    <script type="text/javascript" src="./menu.js"></script>
-
-        <!-- Congratulations Screen -->
+    <!-- Congratulations Screen -->
         <div id="congratsScreen" class="hidden">
             <div class="menu-content">
                 <h1 class="game-title">CONGRATULATIONS!</h1>
@@ -92,121 +90,10 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="./menu.js"></script>
 
-    <script>
-        // Menu system
-        let gameStarted = false;
-        const totalLevels = 20; // Total planned levels
-        const availableLevels = 5; // Currently available levels
-        const finalLevel = 3; // Level that triggers win screen (change to 5 when more levels are complete)
+        
 
-        // Generate level grid
-        function generateLevelGrid() {
-            const levelGrid = document.getElementById('levelGrid');
-            levelGrid.innerHTML = '';
-
-            for (let i = 1; i <= totalLevels; i++) {
-                const levelCard = document.createElement('div');
-                levelCard.className = i <= availableLevels ? 'level-card' : 'level-card locked';
-
-                const levelNumber = document.createElement('div');
-                levelNumber.className = 'level-number';
-                levelNumber.textContent = i;
-
-                const levelStatus = document.createElement('div');
-                levelStatus.className = 'level-status';
-                levelStatus.textContent = i <= availableLevels ? 'Available' : 'Locked';
-
-                levelCard.appendChild(levelNumber);
-                levelCard.appendChild(levelStatus);
-
-                if (i <= availableLevels) {
-                    levelCard.addEventListener('click', () => startLevel(i));
-                }
-
-                levelGrid.appendChild(levelCard);
-            }
-        }
-
-        // Start level
-        function startLevel(levelNum) {
-            document.getElementById('levelSelect').classList.add('hidden');
-            document.getElementById('mainMenu').classList.add('hidden');
-            location.href = location.pathname + '?level=' + levelNum;
-        }
-
-        // Initialize and start the game
-        function initializeGame(levelNum = 1) {
-            if (typeof window.startGame === 'function') {
-                window.startGame(levelNum);
-            }
-            document.getElementById('gameWorld').focus();
-            document.getElementById('backToMenuBtn').classList.remove('hidden');
-        }
-
-        // Back to menu function
-        function goBackToMenu() {
-            location.href = location.pathname;
-        }
-
-        // Show congratulations screen
-        window.showCongratsScreen = function() {
-            document.getElementById('backToMenuBtn').classList.add('hidden');
-            document.getElementById('congratsScreen').classList.remove('hidden');
-        };
-
-        // Check if a level was selected via URL parameter
-        window.addEventListener('load', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const level = urlParams.get('level');
-            if (level) {
-                const levelNum = parseInt(level);
-                if (levelNum >= 1 && levelNum <= availableLevels) {
-                    document.getElementById('mainMenu').classList.add('hidden');
-                    const checkAssets = setInterval(function() {
-                        if (window.assetsLoaded) {
-                            clearInterval(checkAssets);
-                            initializeGame(levelNum);
-                        }
-                    }, 100);
-                }
-            }
-        });
-
-        // Menu navigation
-        document.getElementById('playButton').addEventListener('click', () => {
-            document.getElementById('mainMenu').classList.add('hidden');
-            initializeGame(1); // Play Now starts at level 1
-        });
-
-        document.getElementById('levelsButton').addEventListener('click', () => {
-            document.getElementById('levelSelect').classList.remove('hidden');
-        });
-
-        document.getElementById('directionsButton').addEventListener('click', () => {
-            document.getElementById('directionsModal').classList.remove('hidden');
-        });
-
-        document.getElementById('backToMenu').addEventListener('click', () => {
-            document.getElementById('levelSelect').classList.add('hidden');
-        });
-
-        document.getElementById('closeDirections').addEventListener('click', () => {
-            document.getElementById('directionsModal').classList.add('hidden');
-        });
-
-        document.getElementById('backToMenuBtn').addEventListener('click', goBackToMenu);
-
-        document.getElementById('playAgainBtn').addEventListener('click', () => {
-            location.href = location.pathname + '?level=1';
-        });
-
-        document.getElementById('backToMainMenu').addEventListener('click', () => {
-            location.href = location.pathname;
-        });
-
-        // Initialize level grid on page load
-        generateLevelGrid();
-    </script>
+    
 </body>
 </html>
