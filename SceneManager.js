@@ -22,7 +22,7 @@ class SceneManager {
 
         // Check if we're trying to load a level beyond the final level
         const levelNumber = sceneToLevel[screen];
-        const finalLevel = 3; // Change to 5 when more levels are complete
+        const finalLevel = 4; // Change to 5 when more levels are complete
 
         if (levelNumber && levelNumber > finalLevel) {
             // Show congratulations screen instead of loading next level
