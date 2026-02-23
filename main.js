@@ -73,10 +73,12 @@ window.startGame = function(levelNumber) {
 // Load assets but don't start the game until user clicks Play
 ASSET_MANAGER.downloadAll(async() => {
 	await gameEngine.sound.loadAll({
-		bgm: "sounds/bgm.mp3",
-        jump:   "sounds/jump.mp3",
+		bgm: "sounds/bgm.ogg",
+        jump:   "sounds/jump.wav",
 		run: "sounds/run.wav",
 		death: "sounds/death.wav",
+		dash: "sounds/dash.mp3",
+		jumppad: "sounds/jumppad.mp3"
 		
     });
 	gameEngine.sound.playMusic("bgm", {fadeDuration: 2, volume: 0.1});

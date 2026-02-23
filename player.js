@@ -302,6 +302,8 @@ class Player {
       this.hasDoubleJump = true;
       this.canDash = true;
 
+      this.game.sound.play("jumppad", { pitchVar: 0.2,volume: .3 });
+
       entity.bounce();
     }
   }
@@ -347,6 +349,8 @@ class Player {
       this.canDash = false;
       this.dashTime = this.config.dashDuration;
       this.velocity.y = 0;
+      this.game.sound.play("dash", { pitchVar: 0.05,volume: .3 });
+
       if (this.facing === "right") {
         this.velocity.x = this.config.dashSpeed;
       } else this.velocity.x = -this.config.dashSpeed;
@@ -429,7 +433,7 @@ class Player {
   }
   #startRunSound() {
     if (this.runningSoundHandle || !this.onGround) return; // already playing or in air
-    this.runningSoundHandle = this.game.sound.play("run", { loop: true, volume: 0.6 });
+    this.runningSoundHandle = this.game.sound.play("run", { loop: true, volume: 0.4 });
 }
 
 #stopRunSound() {
