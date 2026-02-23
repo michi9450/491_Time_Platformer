@@ -310,6 +310,24 @@
             background: rgba(0, 217, 255, 0.2);
             color: #fff;
         }
+
+        /* Congratulations Screen */
+        #congratsScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 50%, rgba(15, 52, 96, 0.95) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        #congratsScreen.hidden {
+            display: none;
+        }
     </style>
 
     <script type="text/javascript" src="./assetmanager.js"></script>
@@ -377,6 +395,16 @@
 
         <!-- Back to Menu button (shows during gameplay) -->
         <button id="backToMenuBtn" class="hidden">← Back</button>
+
+        <!-- Congratulations Screen -->
+        <div id="congratsScreen" class="hidden">
+            <div class="menu-content">
+                <h1 class="game-title">CONGRATULATIONS!</h1>
+                <p class="game-subtitle">You've completed the game!</p>
+                <button class="menu-button" id="playAgainBtn">PLAY AGAIN</button>
+                <button class="menu-button" id="backToMainMenu">MAIN MENU</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -384,6 +412,7 @@
         let gameStarted = false;
         const totalLevels = 20; // Total planned levels
         const availableLevels = 5; // Currently available levels
+        const finalLevel = 3; // Level that triggers win screen (change to 5 when more levels are complete)
 
         // Generate level grid
         function generateLevelGrid() {
@@ -434,6 +463,12 @@
             location.href = location.pathname;
         }
 
+        // Show congratulations screen
+        window.showCongratsScreen = function() {
+            document.getElementById('backToMenuBtn').classList.add('hidden');
+            document.getElementById('congratsScreen').classList.remove('hidden');
+        };
+
         // Check if a level was selected via URL parameter
         window.addEventListener('load', function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -475,6 +510,14 @@
         });
 
         document.getElementById('backToMenuBtn').addEventListener('click', goBackToMenu);
+
+        document.getElementById('playAgainBtn').addEventListener('click', () => {
+            location.href = location.pathname + '?level=1';
+        });
+
+        document.getElementById('backToMainMenu').addEventListener('click', () => {
+            location.href = location.pathname;
+        });
 
         // Initialize level grid on page load
         generateLevelGrid();
