@@ -41,6 +41,6 @@ class JumpPad {
 
     draw(ctx) {
         this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        this.BB.draw(ctx); 
+        //this.BB.draw(ctx); 
     }
 }
