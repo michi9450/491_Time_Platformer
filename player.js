@@ -290,7 +290,7 @@ class Player {
     }
   }
   #handleHazard(entity) {
-    if (entity.isHazard) this.die();
+    if (entity.isHazard) this.respawn();
   }
 
   #handlePortal(entity) {
