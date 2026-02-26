@@ -168,7 +168,12 @@ class Player {
     this.coyoteTime = 0;
 
     // Reset all falling platforms
-    this.game.getEntityList().forEach(function (entity) {
+    this.game.getPastList().forEach(function (entity) {
+      if (entity instanceof FallingPlatform) {
+        entity.reset();
+      }
+    });
+    this.game.getPresentList().forEach(function (entity) {
       if (entity instanceof FallingPlatform) {
         entity.reset();
       }
@@ -207,29 +212,6 @@ class Player {
       this.#stopRunSound();
       entity.SM.loadnewLevel(entity.getlevel());
     }
-  }
-
-  // Trigger death state - Mario style pop up then fall
-  die() {
-    if (this.dead) return; // Already dead, don't trigger again
-    this.dead = true;
-    this.state = "dead";
-    this.deathTimer = 0;
-
-    // Mario-style death: pop up first
-    this.velocity.y = -500; // Pop up
-    this.velocity.x = 0; // Stop horizontal movement
-    // Reset all falling platforms
-    this.game.getEntityList().forEach(function (entity) {
-      if (entity instanceof FallingPlatform) {
-        entity.reset();
-      }
-    });
-    this.#stopRunSound();
-    this.game.sound.play("death", {volume: 0.8});
-    
-    this.jumpBuffer = 0;
-    this.updateBB();
   }
 
   #handleHorizontalCollision(entity) {
@@ -308,7 +290,7 @@ class Player {
     }
   }
   #handleHazard(entity) {
-    if (entity.isHazard) this.die();
+    if (entity.isHazard) this.respawn();
   }
 
   #handlePortal(entity) {
@@ -507,6 +489,6 @@ class Player {
     const flip = this.facing === "left"; //changes animation direction
     this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
     // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
-    this.BB.draw(ctx);
+    //this.BB.draw(ctx);
   }
 }

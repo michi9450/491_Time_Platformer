@@ -100,6 +100,6 @@ class Portal {
         );
 
         // Debug: draw bounding box
-        this.BB.draw(ctx);
+        //this.BB.draw(ctx);
     }
 }
