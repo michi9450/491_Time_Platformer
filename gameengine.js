@@ -113,9 +113,12 @@ class GameEngine {
         for (let i = this.currentlist.length - 1; i >= 0; i--) {
             this.currentlist[i].draw(this.ctx, this);
         }
-        
+
         //restores the most recently saved canvas state if any
         this.ctx.restore();
+
+        // Draw HUD elements in screen space (on top of everything)
+        if (this.hudTimer) this.hudTimer.draw(this.ctx);
     };
 
     update() {
@@ -136,6 +139,8 @@ class GameEngine {
             }
         }
         this.camera.update();
+
+        if (this.hudTimer) this.hudTimer.update();
     };
 
     loop() {
