@@ -97,6 +97,6 @@ class MovingPlatform {
         ctx.strokeRect(this.x, this.y, this.width, this.height);
 
         // Draw bounding box for debugging
-        this.BB.draw(ctx);
+        //this.BB.draw(ctx);
     }
 }

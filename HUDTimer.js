@@ -40,7 +40,7 @@ class HUDTimer {
         this.flashTimer = this.flashDuration;
         this.levelStartTime = this.totalTime;
 
-        if (levelNumber >= 3) {
+        if (levelNumber >= 4) {
             this.gameComplete = true;
             this.finalTime = this.totalTime;
             return true;

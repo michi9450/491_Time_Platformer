@@ -32,13 +32,19 @@ class SceneManager {
         if (this.game.hudTimer) this.game.hudTimer.currentLevel = this.currentLevelNumber;
 
         if(screen === "SceneTwo"){
-            this.LoadScreen(SceneTwo, 0, 0);
+            this.LoadScreen(SceneTwo);
         }
         if(screen === "SceneThree"){
-            this.LoadScreen(SceneThree, 0, 0);
+            this.LoadScreen(SceneThree);
         }
         if(screen === "SceneFour"){
-            this.LoadScreen(SceneFour, 128, 192);
+            this.LoadScreen(SceneFour);
+        }
+        if(screen === "SceneFive"){
+            this.LoadScreen(SceneFive);
+        }
+        if(screen === "SceneFive"){
+            this.LoadScreen(SceneFive, 0, 0);
         }
     }
 
@@ -57,7 +63,7 @@ class SceneManager {
 
         in theory we will have a level.js for each level which will hold var for each screen which will be loaded by this method.
     */
-    LoadScreen(screen, x, y){
+    LoadScreen(screen){
         // this.level = level;
         this.screen = screen;
         this.clearEntities();

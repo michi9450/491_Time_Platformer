@@ -73,6 +73,7 @@ class Player {
       dashSpeed: 900, //horizontal dash speed
       dashDuration: 0.2, // how long the dash lasts in seconds
       timeJumpDuration: 0.2, // how long before the player can time jump again
+      levelTransitionDelay: .5 //how long it waits before checking level transition
     };
     // Physics
     this.velocity = { x: 0, y: 0 };
@@ -104,8 +105,13 @@ class Player {
     this.timeJumpTimer = 0;
     this.wasTimeJumpPressed = false;
 
+    //leveltransition timer
+    this.levelTransitionDelay = 0;
+
     //bounding box
     this.updateBB();
+    //sound help
+    this.runningSound = null;
   }
 
   updateBB() {
@@ -128,12 +134,12 @@ class Player {
     this.x += this.velocity.x * TICK;
     this.updateBB();
 
-    this.#handleCollisions("x");
+    this.#handleCollisions("x", TICK);
 
     this.y += this.velocity.y * TICK;
     this.updateBB();
     this.onGround = false;
-    this.#handleCollisions("y");
+    this.#handleCollisions("y", TICK);
 
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
@@ -162,11 +168,18 @@ class Player {
     this.coyoteTime = 0;
 
     // Reset all falling platforms
-    this.game.getEntityList().forEach(function (entity) {
+    this.game.getPastList().forEach(function (entity) {
       if (entity instanceof FallingPlatform) {
         entity.reset();
       }
     });
+    this.game.getPresentList().forEach(function (entity) {
+      if (entity instanceof FallingPlatform) {
+        entity.reset();
+      }
+    });
+    this.#stopRunSound();
+    this.game.sound.play("death", {volume: 0.8});
     this.jumpBuffer = 0;
     this.updateBB();
   }
@@ -192,30 +205,13 @@ class Player {
     }
   }
 
-  #handleLevelTransition(entity) {
-    if (entity.isLevelTransition) {
+  #handleLevelTransition(entity, TICK) {
+    this.levelTransitionDelay += TICK;
+    if (entity.isLevelTransition && this.levelTransitionDelay > this.config.levelTransitionDelay) {
+      this.levelTransitionDelay = 0;
+      this.#stopRunSound();
       entity.SM.loadnewLevel(entity.getlevel());
     }
-  }
-
-  // Trigger death state - Mario style pop up then fall
-  die() {
-    if (this.dead) return; // Already dead, don't trigger again
-    this.dead = true;
-    this.state = "dead";
-    this.deathTimer = 0;
-
-    // Mario-style death: pop up first
-    this.velocity.y = -500; // Pop up
-    this.velocity.x = 0; // Stop horizontal movement
-    // Reset all falling platforms
-    this.game.getEntityList().forEach(function (entity) {
-      if (entity instanceof FallingPlatform) {
-        entity.reset();
-      }
-    });
-    this.jumpBuffer = 0;
-    this.updateBB();
   }
 
   #handleHorizontalCollision(entity) {
@@ -258,7 +254,7 @@ class Player {
       this.velocity.y = 0;
     }
   }
-  #handleCollisions(axis) {
+  #handleCollisions(axis, TICK) {
     for (const entity of this.game.getEntityList()) {
       if (!entity.BB) continue;
       if (!this.BB.collide(entity.BB)) continue;
@@ -272,7 +268,7 @@ class Player {
 
       this.#handleHazard(entity);
       this.#handlePortal(entity);
-      this.#handleLevelTransition(entity);
+      this.#handleLevelTransition(entity, TICK);
     }
   }
   #handleJumpPad(entity) {
@@ -288,11 +284,13 @@ class Player {
       this.hasDoubleJump = true;
       this.canDash = true;
 
+      this.game.sound.play("jumppad", { pitchVar: 0.2,volume: .3 });
+
       entity.bounce();
     }
   }
   #handleHazard(entity) {
-    if (entity.isHazard) this.die();
+    if (entity.isHazard) this.respawn();
   }
 
   #handlePortal(entity) {
@@ -333,6 +331,8 @@ class Player {
       this.canDash = false;
       this.dashTime = this.config.dashDuration;
       this.velocity.y = 0;
+      this.game.sound.play("dash", { pitchVar: 0.05,volume: .3 });
+
       if (this.facing === "right") {
         this.velocity.x = this.config.dashSpeed;
       } else this.velocity.x = -this.config.dashSpeed;
@@ -346,15 +346,17 @@ class Player {
         //both clicked and on the floor
         this.#applyFriction(this.config.runDecel, TICK);
       } else if (left) {
-        this.velocity.x -= this.config.runAccel * TICK;
-        this.facing = "left";
-      } else if (right) {
-        this.velocity.x += this.config.runAccel * TICK;
-        this.facing = "right";
-      } else {
-        // none clicked
-        this.#applyFriction(this.config.runDecel, TICK);
-      }
+    this.velocity.x -= this.config.runAccel * TICK;
+    this.facing = "left";
+    this.#startRunSound();
+} else if (right) {
+    this.velocity.x += this.config.runAccel * TICK;
+    this.facing = "right";
+    this.#startRunSound();
+} else {
+    this.#stopRunSound();
+    this.#applyFriction(this.config.runDecel, TICK);
+}
 
       this.velocity.x = Math.max(
         -this.config.maxRun,
@@ -367,16 +369,18 @@ class Player {
       if (jumpJustPressed) {
         this.jumpBuffer = this.config.jumpBuffer;
       }
-
       if (this.jumpBuffer > 0) {
         if (this.onGround || this.coyoteTime > 0) {
           this.velocity.y = -this.config.jumpSpeed;
           this.jumpBuffer = 0;
           this.onGround = false;
+          this.game.sound.play("jump", { pitchVar: 0.05, volume: .3 });
+          this.#stopRunSound();
         } else if (this.hasDoubleJump) {
           this.velocity.y = -this.config.jumpSpeed;
           this.hasDoubleJump = false;
           this.jumpBuffer = 0;
+          this.game.sound.play("jump", { pitchVar: 0.05,volume: .3 });
         }
       }
 
@@ -409,6 +413,16 @@ class Player {
       if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
     }
   }
+  #startRunSound() {
+    if (this.runningSoundHandle || !this.onGround) return; // already playing or in air
+    this.runningSoundHandle = this.game.sound.play("run", { loop: true, volume: 0.4 });
+}
+
+#stopRunSound() {
+    if (!this.runningSoundHandle) return;
+    this.runningSoundHandle.stop(0.05); // tiny fade out so it doesn't click
+    this.runningSoundHandle = null;
+}
 
     checkDimensionCollision() {//add threshold for how far into an object you need to be before it pushes you
         const that = this;
@@ -472,6 +486,6 @@ class Player {
     const flip = this.facing === "left"; //changes animation direction
     this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
     // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
-    this.BB.draw(ctx);
+    //this.BB.draw(ctx);
   }
 }
