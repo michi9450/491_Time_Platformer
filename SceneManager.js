@@ -17,12 +17,18 @@ class SceneManager {
             "SceneTwo": 2,
             "SceneThree": 3,
             "SceneFour": 4,
-            "SceneFive": 5
+            "SceneFive": 5,
+            "SceneSix": 6,
+            "SceneSeven": 7,
+            "SceneEight": 8,
+            "SceneNine": 9,
+            "SceneTen": 10,
+
         };
 
         // Check if we're trying to load a level beyond the final level
         const levelNumber = sceneToLevel[screen];
-        const finalLevel = 4; // Change to 5 when more levels are complete
+        const finalLevel = 10; // Change to 5 when more levels are complete
 
         if (levelNumber && levelNumber > finalLevel) {
             // Show congratulations screen instead of loading next level
@@ -44,8 +50,20 @@ class SceneManager {
         if(screen === "SceneFive"){
             this.LoadScreen(SceneFive);
         }
-        if(screen === "SceneFive"){
-            this.LoadScreen(SceneFive, 0, 0);
+        if(screen === "SceneSix"){
+            this.LoadScreen(SceneSix);
+        }
+        if(screen === "SceneSeven"){
+            this.LoadScreen(SceneSeven);
+        }
+        if(screen === "SceneEight"){
+            this.LoadScreen(SceneEight);
+        }
+        if(screen === "SceneNine"){
+            this.LoadScreen(SceneNine);
+        }
+        if(screen === "SceneTen"){
+            this.LoadScreen(SceneTen);
         }
     }
 
