@@ -116,27 +116,21 @@ class SceneManager {
             }
         }
 
-        if(this.screen.saw) {
+        if(this.screen.saw) {//saws exist in both dimensions
             for (var i = 0; i < this.screen.saw.length; i++) {
                 var ent = this.screen.saw[i];
-                if(ent.dimension == 0) {// adds the saw for something in the past.
-                    this.game.addEntityPast(new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction));
-                }
-                else { //adds the saw for something in the present.
-                    this.game.addEntityPresent(new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction));
-                }
+                var saw = new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction)
+                this.game.addEntityPast(saw);
+                this.game.addEntityPresent(saw);
             }
         }
 
-        if(this.screen.moving) {
+        if(this.screen.moving) {//moving plateforms exist in both dimensions
             for (var i = 0; i < this.screen.moving.length; i++) {
                 var ent = this.screen.moving[i];
-                if(ent.dimension == 0) {// adds the moving for something in the past.
-                    this.game.addEntityPast(new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed));
-                }
-                else { //adds the moving for something in the present.
-                    this.game.addEntityPresent(new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed));
-                }
+                var plateform = new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed)
+                this.game.addEntityPast(plateform);
+                this.game.addEntityPresent(plateform);
             }
         }
 
