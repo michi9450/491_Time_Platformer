@@ -20,6 +20,7 @@ var SceneOne = {
         {dimension: 1, x: 1732, y: 195, width: 60, height: 440},
         {dimension: 1, x: 2240, y: 195, width: 60, height: 440},
         {dimension: 1, x: 2816, y: 195, width: 60, height: 440}],
+        laser: [{dimension:0, x: 45, y: 200, direction: "vertical"}],
     parallax: [{dimension: 0, file: "sprites/levels/screen_1_past.png"},
             {dimension: 1, file: "sprites/levels/screen_1_present.png"}],
     transition: [{dimension: 0, x: 3050, y: 500, width: 60, height: 60, level: "SceneTwo"},
