@@ -6,9 +6,7 @@ class SceneManager {
 
         // Load the specified starting scene, default to SceneOne if not provided
         const initialScene = startingScene || SceneOne;
-        const spawnX = (initialScene === SceneFour) ? 128 : 0;
-        const spawnY = (initialScene === SceneFour) ? 192 : 0;
-        this.LoadScreen(initialScene, spawnX, spawnY);
+        this.LoadScreen(initialScene);
     }
 
     loadnewLevel(screen){//change this to a hashmap later
