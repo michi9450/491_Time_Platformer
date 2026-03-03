@@ -5,11 +5,10 @@ class Animator
         this.elapsedTime = 0;
         this.totalTime = frameCount * frameDuration;
     };
-    drawFrame(tick, ctx, x, y, flip = false) {
+    drawFrame(tick, ctx, x, y, flip = false, scale = 4) {
         this.elapsedTime += tick;
         if(this.elapsedTime > this.totalTime) this.elapsedTime -= this.totalTime;
         const frame = this.currentFrame();
-        const scale = 4;
 
         ctx.save();
         //needed this to flip animations, also global scale cleaner.

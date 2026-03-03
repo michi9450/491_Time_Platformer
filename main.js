@@ -28,6 +28,7 @@ ASSET_MANAGER.queueDownload("sprites/adventurer-Sheet.png");
 ASSET_MANAGER.queueDownload("sprites/SawBladeSuriken.png");
 ASSET_MANAGER.queueDownload("sprites/Trap_Spike.png");
 ASSET_MANAGER.queueDownload("sprites/jumppad.png");
+ASSET_MANAGER.queueDownload("sprites/laser.png");
 ASSET_MANAGER.queueDownload("sprites/Dimensional_Portal.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_1_past.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_1_present.png");
