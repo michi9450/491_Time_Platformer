@@ -6,9 +6,7 @@ class SceneManager {
 
         // Load the specified starting scene, default to SceneOne if not provided
         const initialScene = startingScene || SceneOne;
-        const spawnX = (initialScene === SceneFour) ? 128 : 0;
-        const spawnY = (initialScene === SceneFour) ? 192 : 0;
-        this.LoadScreen(initialScene, spawnX, spawnY);
+        this.LoadScreen(initialScene);
     }
 
     loadnewLevel(screen){//change this to a hashmap later
@@ -17,12 +15,18 @@ class SceneManager {
             "SceneTwo": 2,
             "SceneThree": 3,
             "SceneFour": 4,
-            "SceneFive": 5
+            "SceneFive": 5,
+            "SceneSix": 6,
+            "SceneSeven": 7,
+            "SceneEight": 8,
+            "SceneNine": 9,
+            "SceneTen": 10,
+
         };
 
         // Check if we're trying to load a level beyond the final level
         const levelNumber = sceneToLevel[screen];
-        const finalLevel = 4; // Change to 5 when more levels are complete
+        const finalLevel = 10; // Change to 5 when more levels are complete
 
         if (levelNumber && levelNumber > finalLevel) {
             // Show congratulations screen instead of loading next level
@@ -44,8 +48,20 @@ class SceneManager {
         if(screen === "SceneFive"){
             this.LoadScreen(SceneFive);
         }
-        if(screen === "SceneFive"){
-            this.LoadScreen(SceneFive, 0, 0);
+        if(screen === "SceneSix"){
+            this.LoadScreen(SceneSix);
+        }
+        if(screen === "SceneSeven"){
+            this.LoadScreen(SceneSeven);
+        }
+        if(screen === "SceneEight"){
+            this.LoadScreen(SceneEight);
+        }
+        if(screen === "SceneNine"){
+            this.LoadScreen(SceneNine);
+        }
+        if(screen === "SceneTen"){
+            this.LoadScreen(SceneTen);
         }
     }
 
@@ -131,24 +147,18 @@ class SceneManager {
         if(this.screen.saw) {
             for (var i = 0; i < this.screen.saw.length; i++) {
                 var ent = this.screen.saw[i];
-                if(ent.dimension == 0) {// adds the saw for something in the past.
-                    this.game.addEntityPast(new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction));
-                }
-                else { //adds the saw for something in the present.
-                    this.game.addEntityPresent(new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction));
-                }
+                var saw = new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction)
+                this.game.addEntityPast(saw);
+                this.game.addEntityPresent(saw);
             }
         }
 
-        if(this.screen.moving) {
+        if(this.screen.moving) {//moving plateforms exist in both dimensions
             for (var i = 0; i < this.screen.moving.length; i++) {
                 var ent = this.screen.moving[i];
-                if(ent.dimension == 0) {// adds the moving for something in the past.
-                    this.game.addEntityPast(new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed));
-                }
-                else { //adds the moving for something in the present.
-                    this.game.addEntityPresent(new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed));
-                }
+                var plateform = new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed)
+                this.game.addEntityPast(plateform);
+                this.game.addEntityPresent(plateform);
             }
         }
 

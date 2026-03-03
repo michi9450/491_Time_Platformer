@@ -40,6 +40,16 @@ ASSET_MANAGER.queueDownload("sprites/levels/screen_4_past.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_4_present.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_5_past.png");
 ASSET_MANAGER.queueDownload("sprites/levels/screen_5_present.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_6_past.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_6_present.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_7_past.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_7_present.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_8_past.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_8_present.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_9_past.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_9_present.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_10_past.png");
+ASSET_MANAGER.queueDownload("sprites/levels/screen_10_present.png");
 
 
 
@@ -61,7 +71,12 @@ window.startGame = function(levelNumber) {
 		2: SceneTwo,
 		3: SceneThree,
 		4: SceneFour,
-		5: SceneFive
+		5: SceneFive,
+		6: SceneSix,
+		7: SceneSeven,
+		8: SceneEight,
+		9: SceneNine,
+		10: SceneTen
 	};
 
 	// Get the scene for the selected level, default to SceneOne
