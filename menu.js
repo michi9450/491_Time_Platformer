@@ -1,6 +1,6 @@
 let gameStarted = false;
-const totalLevels = 20; // Total planned levels
-const availableLevels = 5; // Currently available levels
+const totalLevels = 10; // Total planned levels
+const availableLevels = 10; // Currently available levels
 
 // Generate level grid
 function generateLevelGrid() {

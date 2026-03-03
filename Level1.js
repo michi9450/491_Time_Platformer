@@ -278,5 +278,198 @@ var SceneFive = {
         {dimension: 1, x: 1000, y: 790}],
     //spike: [{dimension: 0, x: 390, y: 310, width: 32, height: 32}]
     parallax: [{dimension: 0, file: "sprites/levels/screen_5_past.png"},
-            {dimension: 1, file: "sprites/levels/screen_5_present.png"}]
+            {dimension: 1, file: "sprites/levels/screen_5_present.png"}],
+    
+};
+var SceneSix = {
+    player:[{x:100, y:100}],
+    collisions:[
+    {dimension: 0, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 0, x: 0, y: 64, width: 64, height: 896},
+    {dimension: 0, x: 64, y: 256, width: 320, height: 704},
+    {dimension: 0, x: 384, y: 896, width: 640, height: 64},
+    {dimension: 0, x: 640, y: 64, width: 192, height: 576},
+    {dimension: 0, x: 1024, y: 320, width: 128, height: 640},
+    {dimension: 0, x: 1920, y: 320, width: 128, height: 640},
+    {dimension: 0, x: 2048, y: 896, width: 256, height: 64},
+    {dimension: 0, x: 2944, y: 896, width: 192, height: 64},
+    {dimension: 0, x: 2240, y: 64, width: 960, height: 576},
+    {dimension: 0, x: 3136, y: 640, width: 64, height: 320},
+    
+    {dimension: 1, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 1, x: 0, y: 64, width: 64, height: 896},
+    {dimension: 1, x: 64, y: 256, width: 320, height: 704},
+    {dimension: 1, x: 384, y: 896, width: 640, height: 64},
+    {dimension: 1, x: 640, y: 64, width: 192, height: 576},
+    {dimension: 1, x: 1024, y: 320, width: 128, height: 640},
+    {dimension: 1, x: 1920, y: 320, width: 128, height: 640},
+    {dimension: 1, x: 2048, y: 896, width: 256, height: 64},
+    {dimension: 1, x: 2944, y: 896, width: 192, height: 64},
+    {dimension: 1, x: 2240, y: 64, width: 960, height: 576},
+    {dimension: 1, x: 3136, y: 640, width: 64, height: 320},
+
+    {dimension: 1, x: 832, y: 512, width: 192, height: 64},
+],
+    jumppad: [{dimension: 0, x: 870, y: 785},
+        {dimension: 1, x: 870, y: 400}],
+
+    parallax: [{dimension: 0, file: "sprites/levels/screen_6_past.png"},
+            {dimension: 1, file: "sprites/levels/screen_6_present.png"}],
+    transition: [{dimension: 0, x: 3040, y: 780, width: 60, height: 60, level: "SceneSeven"},
+                {dimension: 1, x: 3040, y: 780, width: 60, height: 60, level: "SceneSeven"}]
+};
+var SceneSeven = {
+    player:[{x:100, y:700}],
+    collisions:[
+    {dimension: 0, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 0, x: 0, y: 64, width: 384, height: 576},
+    {dimension: 0, x: 0, y: 640, width: 64, height: 320},
+    {dimension: 0, x: 64, y: 896, width: 576, height: 64},
+    {dimension: 0, x: 640, y: 320, width: 256, height: 640},
+    {dimension: 0, x: 896, y: 512, width: 192, height: 448},
+    {dimension: 0, x: 1088, y: 768, width: 640, height: 192},
+    {dimension: 0, x: 1728, y: 896, width: 384, height: 64},
+    {dimension: 0, x: 1920, y: 64, width: 1280, height: 384},
+    {dimension: 0, x: 3008, y: 448, width: 128, height: 192},
+    {dimension: 0, x: 3136, y: 448, width: 64, height: 512},
+    {dimension: 0, x: 3008, y: 896, width: 128, height: 64},
+    {dimension: 0, x: 1920, y: 448, width: 192, height: 256},
+    {dimension: 0, x: 2496, y: 896, width: 64, height: 64},
+
+    {dimension: 0, x: 1024, y: 64, width: 64, height: 448},
+    {dimension: 0, x: 1664, y: 64, width: 64, height: 704},
+    
+    {dimension: 1, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 1, x: 0, y: 64, width: 384, height: 576},
+    {dimension: 1, x: 0, y: 640, width: 64, height: 320},
+    {dimension: 1, x: 64, y: 896, width: 576, height: 64},
+    {dimension: 1, x: 640, y: 320, width: 256, height: 640},
+    {dimension: 1, x: 896, y: 512, width: 192, height: 448},
+    {dimension: 1, x: 1088, y: 768, width: 640, height: 192},
+    {dimension: 1, x: 1728, y: 896, width: 384, height: 64},
+    {dimension: 1, x: 1920, y: 64, width: 1280, height: 384},
+    {dimension: 1, x: 3008, y: 448, width: 128, height: 192},
+    {dimension: 1, x: 3136, y: 448, width: 64, height: 512},
+    {dimension: 1, x: 3008, y: 896, width: 128, height: 64},
+    {dimension: 1, x: 1920, y: 448, width: 192, height: 256},
+    {dimension: 1, x: 2496, y: 896, width: 64, height: 64},
+
+    {dimension: 1, x: 1024, y: 64, width: 64, height: 256},
+    {dimension: 1, x: 1664, y: 320, width: 64, height: 448},
+],
+    parallax: [{dimension: 0, file: "sprites/levels/screen_7_past.png"},
+            {dimension: 1, file: "sprites/levels/screen_7_present.png"}],
+    transition: [{dimension: 0, x: 3040, y: 780, width: 60, height: 60, level: "SceneEight"},
+                {dimension: 1, x: 3040, y: 780, width: 60, height: 60, level: "SceneEight"}]
+};
+var SceneEight = {
+    player:[{x:100, y:400}],
+    collisions:[
+    {dimension: 0, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 0, x: 0, y: 64, width: 384, height: 256},
+    {dimension: 0, x: 0, y: 320, width: 64, height: 320},
+    {dimension: 0, x: 0, y: 640, width: 384, height: 320},
+    {dimension: 0, x: 2880, y: 64, width: 384, height: 256},
+    {dimension: 0, x: 3136, y: 320, width: 384, height: 320},
+    {dimension: 0, x: 2880, y: 640, width: 384, height: 256},
+
+    {dimension: 0, x: 832, y: 64, width: 128, height: 512},
+    {dimension: 0, x: 2304, y: 64, width: 128, height: 512},
+    
+    {dimension: 1, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 1, x: 0, y: 64, width: 384, height: 256},
+    {dimension: 1, x: 0, y: 320, width: 64, height: 320},
+    {dimension: 1, x: 0, y: 640, width: 384, height: 320},
+    {dimension: 1, x: 2880, y: 64, width: 384, height: 320},
+    {dimension: 1, x: 3136, y: 320, width: 384, height: 256},
+    {dimension: 1, x: 2880, y: 640, width: 384, height: 320},
+    
+    {dimension: 1, x: 1536, y: 64, width: 128, height: 512},
+],
+    parallax: [{dimension: 0, file: "sprites/levels/screen_8_past.png"},
+            {dimension: 1, file: "sprites/levels/screen_8_present.png"}],
+    transition: [{dimension: 0, x: 3040, y: 780, width: 60, height: 60, level: "SceneNine"},
+                {dimension: 1, x: 3040, y: 780, width: 60, height: 60, level: "SceneNine"}]
+};
+var SceneNine = {
+    player:[{x:100, y:700}],
+    collisions:[
+    {dimension: 0, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 0, x: 0, y: 64, width: 320, height: 576},
+    {dimension: 0, x: 0, y: 640, width: 64, height: 320},
+    {dimension: 0, x: 64, y: 896, width: 448, height: 64},
+    {dimension: 0, x: 512, y: 448, width: 192, height: 512},
+    {dimension: 0, x: 1024, y: 448, width: 192, height: 512},
+    {dimension: 0, x: 1216, y: 896, width: 256, height: 64},
+    {dimension: 0, x: 1408, y: 64, width: 64, height: 576},
+    {dimension: 0, x: 1664, y: 256, width: 192, height: 192},
+    {dimension: 0, x: 1664, y: 448, width: 320, height: 512},
+    {dimension: 0, x: 3136, y: 64, width: 64, height: 384},
+    {dimension: 0, x: 2960, y: 448, width: 384, height: 512},
+
+    {dimension: 0, x: 832, y: 640, width: 64, height: 64},
+    {dimension: 0, x: 1024, y: 128, width: 64, height: 256},
+
+    {dimension: 1, x: 0, y: 0, width: 3200, height: 64},
+    {dimension: 1, x: 0, y: 64, width: 320, height: 576},
+    {dimension: 1, x: 0, y: 640, width: 64, height: 320},
+    {dimension: 1, x: 64, y: 896, width: 448, height: 64},
+    {dimension: 1, x: 512, y: 448, width: 192, height: 512},
+    {dimension: 1, x: 1024, y: 448, width: 192, height: 512},
+    {dimension: 1, x: 1216, y: 896, width: 256, height: 64},
+    {dimension: 1, x: 1408, y: 64, width: 64, height: 576},
+    {dimension: 1, x: 1664, y: 256, width: 192, height: 192},
+    {dimension: 1, x: 1664, y: 448, width: 320, height: 512},
+    {dimension: 1, x: 3136, y: 64, width: 64, height: 384},
+    {dimension: 1, x: 2960, y: 448, width: 384, height: 512},
+    
+    {dimension: 1, x: 512, y: 128, width: 64, height: 256},
+],
+    parallax: [{dimension: 0, file: "sprites/levels/screen_9_past.png"},
+            {dimension: 1, file: "sprites/levels/screen_9_present.png"}],
+    transition: [{dimension: 0, x: 3040, y: 780, width: 60, height: 60, level: "SceneTen"},
+                {dimension: 1, x: 3040, y: 780, width: 60, height: 60, level: "SceneTen"}]
+};
+var SceneTen = {
+    player:[{x:100, y:300}],
+    collisions:[
+    {dimension: 0, x: 0, y: 0, width: 320, height: 256},
+    {dimension: 0, x: 0, y: 256, width: 64, height: 256},
+    {dimension: 0, x: 0, y: 512, width: 320, height: 448},
+    {dimension: 0, x: 512, y: 0, width: 128, height: 448},
+    {dimension: 0, x: 512, y: 704, width: 128, height: 128},
+    {dimension: 0, x: 960, y: 320, width: 192, height: 512},
+    {dimension: 0, x: 1728, y: 0, width: 128, height: 384},
+    {dimension: 0, x: 1728, y: 704, width: 128, height: 128},
+    {dimension: 0, x: 2176, y: 320, width: 128, height: 448},
+    {dimension: 0, x: 2496, y: 320, width: 128, height: 448},
+    {dimension: 0, x: 3008, y: 0, width: 192, height: 256},
+    {dimension: 0, x: 3008, y: 512, width: 192, height: 448},
+    {dimension: 0, x: 3136, y: 256, width: 64, height: 256},
+    
+    {dimension: 0, x: 512, y: 512, width: 64, height: 128},
+    {dimension: 0, x: 1728, y: 448, width: 64, height: 192},
+    {dimension: 0, x: 2176, y: 64, width: 64, height: 192},
+    {dimension: 0, x: 2560, y: 64, width: 64, height: 192},
+
+    {dimension: 1, x: 0, y: 0, width: 320, height: 256},
+    {dimension: 1, x: 0, y: 256, width: 64, height: 256},
+    {dimension: 1, x: 0, y: 512, width: 320, height: 448},
+    {dimension: 1, x: 512, y: 0, width: 128, height: 448},
+    {dimension: 1, x: 512, y: 704, width: 128, height: 128},
+    {dimension: 1, x: 960, y: 320, width: 192, height: 512},
+    {dimension: 1, x: 1728, y: 0, width: 128, height: 384},
+    {dimension: 1, x: 1728, y: 704, width: 128, height: 128},
+    {dimension: 1, x: 2176, y: 320, width: 128, height: 448},
+    {dimension: 1, x: 2496, y: 320, width: 128, height: 448},
+    {dimension: 1, x: 3008, y: 0, width: 192, height: 256},
+    {dimension: 1, x: 3008, y: 512, width: 192, height: 448},
+    {dimension: 1, x: 3136, y: 256, width: 64, height: 256},
+    
+    {dimension: 1, x: 768, y: 768, width: 64, height: 64},
+    {dimension: 1, x: 1984, y: 704, width: 64, height: 64},
+    {dimension: 1, x: 2688, y: 512, width: 256, height: 64},
+],
+    parallax: [{dimension: 0, file: "sprites/levels/screen_10_past.png"},
+            {dimension: 1, file: "sprites/levels/screen_10_present.png"}]
 };
