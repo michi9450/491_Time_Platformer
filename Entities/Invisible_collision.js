@@ -11,7 +11,7 @@ class invisible_collision{
 
     draw(ctx) {
         ctx.strokeStyle= "red";
-        //ctx.strokeRect(this.x, this.y, this.width, this.height);
-        // this.BB.draw(ctx);
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        this.BB.draw(ctx);
     }
 }
