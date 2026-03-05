@@ -81,7 +81,7 @@ window.startGame = function(levelNumber) {
 	// Get the scene for the selected level, default to SceneOne
 	const selectedScene = levelMap[levelNumber] || SceneOne;
 
-	new SceneManager(gameEngine, selectedScene);
+	new SceneManager(gameEngine, selectedScene, levelNumber);
 	gameEngine.start();
 };
 

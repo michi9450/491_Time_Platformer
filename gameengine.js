@@ -130,6 +130,9 @@ class GameEngine {
         
         //restores the most recently saved canvas state if any
         this.ctx.restore();
+
+        // Draw HUD elements in screen space (on top of everything)
+        if (this.hudTimer) this.hudTimer.draw(this.ctx);
     };
 
     update() {
@@ -150,6 +153,8 @@ class GameEngine {
             }
         }
         this.camera.update();
+
+        if (this.hudTimer) this.hudTimer.update();
     };
 
     loop() {
