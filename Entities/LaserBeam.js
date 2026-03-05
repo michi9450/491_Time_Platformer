@@ -67,6 +67,6 @@ class LaserBeam {
         ctx.restore();
 
         // Draw debug BB
-        ctx.strokeRect(this.BB.x, this.BB.y, this.BB.width, this.BB.height);
+        //ctx.strokeRect(this.BB.x, this.BB.y, this.BB.width, this.BB.height);
     }
 }
