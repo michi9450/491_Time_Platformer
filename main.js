@@ -76,7 +76,8 @@ window.startGame = function(levelNumber) {
 		7: SceneSeven,
 		8: SceneEight,
 		9: SceneNine,
-		10: SceneTen
+		10: SceneTen,
+		11: SceneEleven,
 	};
 
 	// Get the scene for the selected level, default to SceneOne

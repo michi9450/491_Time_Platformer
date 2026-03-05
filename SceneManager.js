@@ -38,7 +38,7 @@ class SceneManager {
             "SceneEight": 8,
             "SceneNine": 9,
             "SceneTen": 10,
-
+            "SceneEleven": 11,
         };
 
         // Check if we're trying to load a level beyond the final level

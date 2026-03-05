@@ -306,7 +306,7 @@ var SceneFive = {
     
 };
 var SceneSix = {
-    player:[{x:2200, y:700}],
+    player:[{x:100, y:100}],
     collisions:[
     {dimension: 0, x: 0, y: 0, width: 3200, height: 64},
     {dimension: 0, x: 0, y: 64, width: 64, height: 896},
@@ -523,7 +523,7 @@ var SceneNine = {
     {dimension: 0, x: 1664, y: 256, width: 192, height: 192},
     {dimension: 0, x: 1664, y: 448, width: 320, height: 512},
     {dimension: 0, x: 3136, y: 64, width: 64, height: 384},
-    {dimension: 0, x: 2960, y: 448, width: 384, height: 512},
+    {dimension: 0, x: 2816, y: 448, width: 384, height: 512},
 
     {dimension: 0, x: 832, y: 640, width: 64, height: 64},
     {dimension: 0, x: 1024, y: 128, width: 64, height: 256},
@@ -539,14 +539,55 @@ var SceneNine = {
     {dimension: 1, x: 1664, y: 256, width: 192, height: 192},
     {dimension: 1, x: 1664, y: 448, width: 320, height: 512},
     {dimension: 1, x: 3136, y: 64, width: 64, height: 384},
-    {dimension: 1, x: 2960, y: 448, width: 384, height: 512},
+    {dimension: 1, x: 2816, y: 448, width: 384, height: 512},
     
     {dimension: 1, x: 512, y: 128, width: 64, height: 256},
 ],
+
+    jumppad: [
+    {dimension: 0, x: 360, y: 785},
+    {dimension: 0, x: 808, y: 526}
+    ],
+
+    moving: [
+     {Sx: 1500, Sy: 890, Ex: 1500, Ey: 240, width: 128, height: 32, speed: 250},
+     ],
+
+    laser: [
+    {dimension: 1 ,x: 1450, y: 434, direction: "Horizontal"},
+    {dimension: 0 ,x: 1700, y: 40, direction: "vertical"},
+    {dimension: 1 ,x: 96, y: 648, direction: "vertical"},
+    {dimension: 1 ,x: 2356, y: 142, direction: "vertical"},
+    {dimension: 0 ,x: 2150, y: 196, direction: "vertical"},
+    {dimension: 0 ,x: 2566, y: 198, direction: "vertical"},
+    ],
+
+    spike: [
+        {dimension: 0, x: 1020, y: 390, width: 32, height: 32},
+        {dimension: 0, x: 1050, y: 390, width: 32, height: 32},
+        {dimension: 0, x: 1080, y: 390, width: 32, height: 32},
+        {dimension: 0, x: 1110, y: 390, width: 32, height: 32},
+        {dimension: 0, x: 1140, y: 390, width: 32, height: 32},
+        {dimension: 0, x: 1170, y: 390, width: 32, height: 32},
+
+        {dimension: 1, x: 1020, y: 390, width: 32, height: 32},
+        {dimension: 1, x: 1050, y: 390, width: 32, height: 32},
+        {dimension: 1, x: 1080, y: 390, width: 32, height: 32},
+        {dimension: 1, x: 1110, y: 390, width: 32, height: 32},
+        {dimension: 1, x: 1140, y: 390, width: 32, height: 32},
+        {dimension: 1, x: 1170, y: 390, width: 32, height: 32},
+    ],
+
+    falling: [
+        {dimension: 1, x: 2094, y: 390, width: 128, height: 32, delay: .5},
+        {dimension: 1, x: 2528, y: 384, width: 128, height: 32, delay: .5},
+        {dimension: 0, x: 2312, y: 390, width: 128, height: 32, delay: .5},
+    ],
+
     parallax: [{dimension: 0, file: "sprites/levels/screen_9_past.png"},
             {dimension: 1, file: "sprites/levels/screen_9_present.png"}],
-    transition: [{dimension: 0, x: 3040, y: 780, width: 60, height: 60, level: "SceneTen"},
-                {dimension: 1, x: 3040, y: 780, width: 60, height: 60, level: "SceneTen"}]
+    transition: [{dimension: 0, x: 3040, y: 340, width: 60, height: 60, level: "SceneTen"},
+                {dimension: 1, x: 3040, y: 340, width: 60, height: 60, level: "SceneTen"}]
 };
 var SceneTen = {
     player:[{x:100, y:300}],
@@ -588,6 +629,76 @@ var SceneTen = {
     {dimension: 1, x: 1984, y: 704, width: 64, height: 64},
     {dimension: 1, x: 2688, y: 512, width: 256, height: 64},
 ],
+
+    jumppad: [
+    {dimension: 1, x: 1958, y: 596},
+    {dimension: 1, x: 742, y: 662}
+    ],
+
+    laser: [
+    {dimension: 1 ,x: 2394, y: 52, direction: "vertical"},
+    ],
+
+    spike: [
+        {dimension: 0, x: 510, y: 646, width: 32, height: 32},
+        {dimension: 0, x: 540, y: 646, width: 32, height: 32},
+        {dimension: 0, x: 570, y: 646, width: 32, height: 32},
+        {dimension: 0, x: 600, y: 646, width: 32, height: 32},
+
+        {dimension: 0, x: 1720, y: 646, width: 32, height: 32},
+        {dimension: 0, x: 1750, y: 646, width: 32, height: 32},
+        {dimension: 0, x: 1780, y: 646, width: 32, height: 32},
+        {dimension: 0, x: 1810, y: 646, width: 32, height: 32},
+
+        {dimension: 0, x: 2176, y: 280, width: 32, height: 32},
+        {dimension: 0, x: 2216, y: 280, width: 32, height: 32},
+        {dimension: 0, x: 2246, y: 280, width: 32, height: 32},
+        {dimension: 0, x: 2260, y: 280, width: 32, height: 32},
+
+        {dimension: 0, x: 2496, y: 280, width: 32, height: 32},
+        {dimension: 0, x: 2526, y: 280, width: 32, height: 32},
+        {dimension: 0, x: 2556, y: 280, width: 32, height: 32},
+        {dimension: 0, x: 2572, y: 280, width: 32, height: 32},
+
+        {dimension: 1, x: 2690, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2720, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2750, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2780, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2810, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2840, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2870, y: 460, width: 32, height: 32},
+        {dimension: 1, x: 2900, y: 460, width: 32, height: 32},
+
+        {dimension: 1, x: 510, y: 646, width: 32, height: 32},
+        {dimension: 1, x: 540, y: 646, width: 32, height: 32},
+        {dimension: 1, x: 570, y: 646, width: 32, height: 32},
+        {dimension: 1, x: 600, y: 646, width: 32, height: 32},
+
+        {dimension: 1, x: 1720, y: 646, width: 32, height: 32},
+        {dimension: 1, x: 1750, y: 646, width: 32, height: 32},
+        {dimension: 1, x: 1780, y: 646, width: 32, height: 32},
+        {dimension: 1, x: 1810, y: 646, width: 32, height: 32},
+
+        {dimension: 1, x: 2176, y: 280, width: 32, height: 32},
+        {dimension: 1, x: 2216, y: 280, width: 32, height: 32},
+        {dimension: 1, x: 2246, y: 280, width: 32, height: 32},
+        {dimension: 1, x: 2260, y: 280, width: 32, height: 32},
+
+        {dimension: 1, x: 2496, y: 280, width: 32, height: 32},
+        {dimension: 1, x: 2526, y: 280, width: 32, height: 32},
+        {dimension: 1, x: 2556, y: 280, width: 32, height: 32},
+        {dimension: 1, x: 2572, y: 280, width: 32, height: 32},
+    ],
+
+    falling: [
+        {dimension: 0, x: 1952, y: 350, width: 128, height: 32, delay: .5},
+        {dimension: 0, x: 2338, y: 350, width: 128, height: 32, delay: .5},
+        {dimension: 1, x: 1376, y: 544, width: 128, height: 32, delay: .5},
+    ],
+
     parallax: [{dimension: 0, file: "sprites/levels/screen_10_past.png"},
-            {dimension: 1, file: "sprites/levels/screen_10_present.png"}]
+            {dimension: 1, file: "sprites/levels/screen_10_present.png"}],
+    transition: [{dimension: 0, x: 3040, y: 400, width: 60, height: 60, level: "SceneEleven"},
+                {dimension: 1, x: 3040, y: 400, width: 60, height: 60, level: "SceneEleven"}]
 };
+var SceneEleven= {}
