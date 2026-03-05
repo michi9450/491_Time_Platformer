@@ -1,8 +1,12 @@
 class SceneManager {
-    constructor(game, startingScene) {
+    constructor(game, startingScene, startingLevel = 1) {
         this.game = game;
         //this.game.camera = this; scene manager controls camera however, going to add this later
         this.lives = 3; //SceneManager will control amount of lives player has
+        this.currentLevelNumber = startingLevel;
+
+        // Create the HUD timer
+        this.game.hudTimer = new HUDTimer(this.game, startingLevel);
 
         // Load the specified starting scene, default to SceneOne if not provided
         const initialScene = startingScene || SceneOne;
@@ -10,6 +14,19 @@ class SceneManager {
     }
 
     loadnewLevel(screen){//change this to a hashmap later
+        // Guard against being called multiple times in the same frame.
+        if (this.isTransitioning) return;
+        this.isTransitioning = true;
+        setTimeout(() => { this.isTransitioning = false; }, 500);
+
+        // Record the completed level time and check if game is over
+        if (this.game.hudTimer) {
+            const isLastLevel = this.game.hudTimer.onLevelComplete(this.currentLevelNumber);
+            if (isLastLevel) return; // Show final screen, don't load next level
+        }
+        this.currentLevelNumber++;
+        if (this.game.hudTimer) this.game.hudTimer.currentLevel = this.currentLevelNumber;
+
         // Map scene names to level numbers
         const sceneToLevel = {
             "SceneTwo": 2,
