@@ -81,6 +81,7 @@ class SceneManager {
         in theory we will have a level.js for each level which will hold var for each screen which will be loaded by this method.
     */
     LoadScreen(screen){
+        if(!(this.game.isPast)) this.game.changeTime()
         // this.level = level;
         this.screen = screen;
         this.clearEntities();
@@ -156,7 +157,7 @@ class SceneManager {
         if(this.screen.moving) {//moving plateforms exist in both dimensions
             for (var i = 0; i < this.screen.moving.length; i++) {
                 var ent = this.screen.moving[i];
-                var plateform = new MovingPlateform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed)
+                var plateform = new MovingPlatform(this.game, ent.Sx, ent.Sy, ent.Ex, ent.Ey, ent.width, ent.height, ent.speed)
                 this.game.addEntityPast(plateform);
                 this.game.addEntityPresent(plateform);
             }
