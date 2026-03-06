@@ -109,6 +109,8 @@ class Player {
     this.levelTransitionDelay = 0;
 
     //bounding box
+    this.bbPadX = 10;
+    this.bbPadY = 10;
     this.updateBB();
     //sound help
     this.runningSound = null;
@@ -116,9 +118,14 @@ class Player {
 
   updateBB() {
     this.lastBB = this.BB;
-    this.BB = new BoundingBox(this.x, this.y, this.width * 4, this.height * 4);
-    //console.log(this.BB.bottom);
-  }
+    const padBottom = 2;
+    this.BB = new BoundingBox(
+        this.x + this.bbPadX,
+        this.y + this.bbPadY,
+        this.width * 4 - this.bbPadX * 2,
+        this.height * 4 - this.bbPadY - padBottom
+    );
+}
 
   update() {
     const TICK = this.game.clockTick;
@@ -244,17 +251,17 @@ this.game.getPresentList().forEach(function (entity) {
       const playerCenterX = this.x + (this.width * 4) / 2;
       const entityCenterX = entity.x + entity.width / 2;
       if (playerCenterX < entityCenterX) {
-        this.x = entity.BB.left - this.width * 4;
+        this.x = entity.BB.left - this.BB.width - this.bbPadX;
       } else {
-        this.x = entity.BB.right;
+        this.x = entity.BB.right - this.bbPadX;
       }
       this.velocity.x = 0;
     } else {
       if (fromLeft && this.velocity.x > 0) {
-        this.x = entity.BB.left - this.width * 4;
+        this.x = entity.BB.left - this.BB.width - this.bbPadX;
         this.velocity.x = 0;
       } else if (fromRight && this.velocity.x < 0) {
-        this.x = entity.BB.right;
+        this.x = entity.BB.right - this.bbPadX;
         this.velocity.x = 0;
       }
     }
@@ -268,7 +275,7 @@ this.game.getPresentList().forEach(function (entity) {
       this.velocity.y >= 0 &&
       this.lastBB.bottom <= entity.BB.top + landingThreshold
     ) {
-      this.y = entity.BB.top - this.height * 4;
+      this.y = entity.BB.top - this.BB.height - this.bbPadY;
       this.velocity.y = 0;
       this.onGround = true;
       this.canDash = true;
@@ -284,7 +291,7 @@ this.game.getPresentList().forEach(function (entity) {
 
     // ceiling
     if (this.velocity.y < 0 && this.lastBB.top >= entity.BB.bottom - 10) {
-      this.y = entity.BB.bottom;
+      this.y = entity.BB.bottom - this.bbPadY;
       this.velocity.y = 0;
     }
   }
@@ -537,6 +544,6 @@ this.game.getPresentList().forEach(function (entity) {
     const flip = this.facing === "left"; //changes animation direction
     this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
     // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
-    //this.BB.draw(ctx);
+    // this.BB.draw(ctx);
   }
 }
