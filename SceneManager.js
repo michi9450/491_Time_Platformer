@@ -165,7 +165,7 @@ class SceneManager {
         if(this.screen.saw) {
             for (var i = 0; i < this.screen.saw.length; i++) {
                 var ent = this.screen.saw[i];
-                var saw = new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction)
+                var saw = new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction, ent.startDirection)
                 this.game.addEntityPast(saw);
                 this.game.addEntityPresent(saw);
             }

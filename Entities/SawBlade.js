@@ -1,16 +1,16 @@
 class SawBlade {
-    constructor(game, x, y, size, pathLength, speed, direction = "horizontal") {
-        Object.assign(this, { game, x, y, size, pathLength, speed, direction });
+    constructor(game, x, y, size, pathLength, speed, direction = "horizontal", startDirection = 1) {
+        Object.assign(this, { game, x, y, size, pathLength, speed, direction, startDirection });
 
         // Starting position for path calculation
         this.startX = x;
         this.startY = y;
 
         // Movement direction: 1 = forward, -1 = backward
-        this.moveDirection = 1;
+        this.moveDirection = startDirection;
 
         // Current position offset from start
-        this.pathOffset = 0;
+        this.pathOffset = startDirection === 1? 0: pathLength;
 
         // Sprite animation - 96x24 sprite sheet, 4 frames of 24x24 each
         this.animator = new Animator(
@@ -64,6 +64,13 @@ class SawBlade {
         this.updateBB();
     }
 
+    reset() {
+    this.x = this.startX;
+    this.y = this.startY;
+    this.pathOffset = this.startDirection === 1 ? 0 : this.pathLength;
+    this.moveDirection = this.startDirection;
+    this.updateBB();
+}
     draw(ctx) {
         // Draw the animated sprite with custom scale
         const frame = this.animator.currentFrame();

@@ -11,6 +11,8 @@ class MovingPlatform {
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
+        this.velY = 0;
+        this.velX = 0;
 
         // Calculate total distance and direction
         const dx = endX - startX;
@@ -44,6 +46,9 @@ class MovingPlatform {
         // Store last position for collision detection
         this.lastX = this.x;
         this.lastY = this.y;
+
+        this.velX = this.dirX * this.speed * (this.movingForward ? 1 : -1);
+        this.velY = this.dirY * this.speed * (this.movingForward ? 1 : -1);
 
         // Move platform
         if (this.movingForward) {
