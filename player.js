@@ -128,7 +128,7 @@ class Player {
       this.updateDeathAnimation(TICK);
       return; // Skip normal update while dead
     }
-
+    this.ridingPlatform = null;
     this.#handleInput(TICK);
     this.velocity.x 
     this.x += this.velocity.x * TICK;
@@ -140,6 +140,12 @@ class Player {
     this.updateBB();
     this.onGround = false;
     this.#handleCollisions("y", TICK);
+
+    if (this.ridingPlatform) {
+    this.x += this.ridingPlatform.velX * TICK;
+    this.y += this.ridingPlatform.velY * TICK;
+    this.updateBB();
+}
 
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
@@ -232,21 +238,21 @@ class Player {
     if (!entity.isPlatform) return;
 
     // landing
-    if (this.velocity.y > 0 && this.lastBB.bottom <= entity.BB.top + 10) {
-      this.y = entity.BB.top - this.height * 4;
-      this.velocity.y = 0;
-      this.onGround = true;
-      this.canDash = true;
-      this.hasDoubleJump = true;
-      this.coyoteTime = this.config.coyoteTime;
+const landingThreshold = entity instanceof MovingPlatform ? 40 : 10;
+if (this.velocity.y >= 0 && this.lastBB.bottom <= entity.BB.top + landingThreshold) {
+    this.y = entity.BB.top - this.height * 4;
+    this.velocity.y = 0;
+    this.onGround = true;
+    this.canDash = true;
+    this.hasDoubleJump = true;
+    this.coyoteTime = this.config.coyoteTime;
 
-      if (entity instanceof FallingPlatform) entity.activate();
+    if (entity instanceof FallingPlatform) entity.activate();
 
-      if (entity instanceof MovingPlatform && entity.lastX !== undefined) {
-        this.x += entity.x - entity.lastX;
-        this.y += entity.y - entity.lastY;
-      }
+    if (entity instanceof MovingPlatform) {
+        this.ridingPlatform = entity;
     }
+}
 
     // ceiling
     if (this.velocity.y < 0 && this.lastBB.top >= entity.BB.bottom - 10) {
@@ -275,20 +281,20 @@ class Player {
     if (!entity.isJumpPad) return;
 
     if (this.velocity.y > 0 && this.lastBB.bottom <= entity.BB.top + 10) {
-      this.y = entity.BB.top - this.height * 4;
-      this.velocity.y = -entity.boost;
-      this.fromJumpPad = true;
+        this.y = entity.BB.top - this.height * 4;
+        this.velocity.y = -entity.boost;
+        this.fromJumpPad = true;
+        this.ridingPlatform = null;
 
-      this.onGround = false;
-      this.coyoteTime = 0;
-      this.hasDoubleJump = true;
-      this.canDash = true;
+        this.onGround = false;
+        this.coyoteTime = 0;
+        this.hasDoubleJump = true;
+        this.canDash = true;
 
-      this.game.sound.play("jumppad", { pitchVar: 0.2,volume: .3 });
-
-      entity.bounce();
+        this.game.sound.play("jumppad", { pitchVar: 0.2, volume: .3 });
+        entity.bounce();
     }
-  }
+}
   #handleHazard(entity) {
     if (entity.isHazard) this.respawn();
   }
@@ -374,12 +380,14 @@ class Player {
           this.velocity.y = -this.config.jumpSpeed;
           this.jumpBuffer = 0;
           this.onGround = false;
+          this.ridingPlatform = null;
           this.game.sound.play("jump", { pitchVar: 0.05, volume: .3 });
           this.#stopRunSound();
         } else if (this.hasDoubleJump) {
           this.velocity.y = -this.config.jumpSpeed;
           this.hasDoubleJump = false;
           this.jumpBuffer = 0;
+          this.ridingPlatform = null;
           this.game.sound.play("jump", { pitchVar: 0.05,volume: .3 });
         }
       }
@@ -407,8 +415,12 @@ class Player {
       }
 
       //Gravity
-      this.velocity.y += this.config.gravity * TICK;
-      this.velocity.y = Math.min(this.velocity.y, this.config.maxFall);
+      if (this.ridingPlatform && this.ridingPlatform.velY > 0 && this.onGround) {
+    this.velocity.y = this.ridingPlatform.velY;
+} else {
+    this.velocity.y += this.config.gravity * TICK;
+    this.velocity.y = Math.min(this.velocity.y, this.config.maxFall);
+}
       if (this.velocity.y >= 0) this.fromJumpPad = false;
       if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
     }
