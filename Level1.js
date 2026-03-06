@@ -556,7 +556,6 @@ var SceneNine = {
     laser: [
     {dimension: 1 ,x: 1450, y: 434, direction: "Horizontal"},
     {dimension: 0 ,x: 1700, y: 40, direction: "vertical"},
-    {dimension: 1 ,x: 96, y: 648, direction: "vertical"},
     {dimension: 1 ,x: 2356, y: 142, direction: "vertical"},
     {dimension: 0 ,x: 2150, y: 196, direction: "vertical"},
     {dimension: 0 ,x: 2566, y: 198, direction: "vertical"},
