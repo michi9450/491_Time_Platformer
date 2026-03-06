@@ -183,17 +183,17 @@ class Player {
     this.canDash = true;
     this.coyoteTime = 0;
 
-    // Reset all falling platforms
+    // Reset all objects platforms
     this.game.getPastList().forEach(function (entity) {
-      if (entity instanceof FallingPlatform) {
-        entity.reset();
-      }
-    });
-    this.game.getPresentList().forEach(function (entity) {
-      if (entity instanceof FallingPlatform) {
-        entity.reset();
-      }
-    });
+    if (entity instanceof FallingPlatform) entity.reset();
+    if (entity instanceof MovingPlatform) entity.reset();
+    if (entity instanceof SawBlade) entity.reset();
+});
+this.game.getPresentList().forEach(function (entity) {
+    if (entity instanceof FallingPlatform) entity.reset();
+    if (entity instanceof MovingPlatform) entity.reset();
+    if (entity instanceof SawBlade) entity.reset();
+});
     this.#stopRunSound();
     this.game.sound.play("death", { volume: 0.8 });
     this.jumpBuffer = 0;

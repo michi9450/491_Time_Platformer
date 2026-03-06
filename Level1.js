@@ -339,7 +339,7 @@ var SceneSix = {
     
     saw: [
     {x: 400, y: 100, width: 32, path: 760, speed: 500, direction: "Vertical"},
-    //{x: 550, y: 100, width: 32, path: 760, speed: 500, direction: "Vertical"}
+    {x: 550, y: 100, width: 32, path: 760, speed: 500, direction: "Vertical", startDirection: -1},
     {x: 1150, y: 250, width: 32, path: 370, speed: 300, direction: "horizontal"},
     {x: 1500, y: 250, width: 32, path: 370, speed: 300, direction: "horizontal"},
     ],
