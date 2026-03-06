@@ -180,7 +180,7 @@ var SceneThree = {
                 {dimension: 1, x: 3040, y: 800, width: 60, height: 60, level: "SceneFour"}]
 };
 var SceneFour = {
-    player:[{x:100, y:200}],
+    player:[{x:140, y:180}],
     collisions:[{dimension: 0, x: 0, y: 0, width: 3200, height: 64},
     {dimension: 0, x: 0, y: 64, width: 64, height: 896},
     {dimension: 0, x: 64, y: 320, width: 256, height: 640},

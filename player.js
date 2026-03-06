@@ -128,6 +128,12 @@ class Player {
       this.updateDeathAnimation(TICK);
       return; // Skip normal update while dead
     }
+
+    if (this.ridingPlatform) {
+      this.x += this.ridingPlatform.velX * TICK;
+      this.y += this.ridingPlatform.velY * TICK;
+      this.updateBB();
+    }
     this.ridingPlatform = null;
     this.#handleInput(TICK);
     this.velocity.x;
@@ -150,12 +156,6 @@ class Player {
     } else {
       this.#stopRunSound();
     } //moved running sound outside of input, to handle all cases.
-
-    if (this.ridingPlatform) {
-      this.x += this.ridingPlatform.velX * TICK;
-      this.y += this.ridingPlatform.velY * TICK;
-      this.updateBB();
-    }
 
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
@@ -239,12 +239,24 @@ class Player {
     const fromLeft = this.lastBB.right <= entity.BB.left + 5;
     const fromRight = this.lastBB.left >= entity.BB.right - 5;
 
-    if (fromLeft && this.velocity.x > 0) {
-      this.x = entity.BB.left - this.width * 4;
+    if (entity instanceof invisible_collision) {
+      //fixes moving platform not making player collide with regular collision
+      const playerCenterX = this.x + (this.width * 4) / 2;
+      const entityCenterX = entity.x + entity.width / 2;
+      if (playerCenterX < entityCenterX) {
+        this.x = entity.BB.left - this.width * 4;
+      } else {
+        this.x = entity.BB.right;
+      }
       this.velocity.x = 0;
-    } else if (fromRight && this.velocity.x < 0) {
-      this.x = entity.BB.right;
-      this.velocity.x = 0;
+    } else {
+      if (fromLeft && this.velocity.x > 0) {
+        this.x = entity.BB.left - this.width * 4;
+        this.velocity.x = 0;
+      } else if (fromRight && this.velocity.x < 0) {
+        this.x = entity.BB.right;
+        this.velocity.x = 0;
+      }
     }
   }
   #handleVerticalCollisions(entity) {
