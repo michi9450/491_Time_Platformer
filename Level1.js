@@ -340,8 +340,8 @@ var SceneSix = {
     saw: [
     {x: 400, y: 100, width: 32, path: 760, speed: 500, direction: "Vertical"},
     {x: 550, y: 100, width: 32, path: 760, speed: 500, direction: "Vertical", startDirection: -1},
-    {x: 1150, y: 250, width: 32, path: 370, speed: 300, direction: "horizontal"},
-    {x: 1500, y: 250, width: 32, path: 370, speed: 300, direction: "horizontal"},
+    {x: 1150, y: 250, width: 32, path: 300, speed: 300, direction: "horizontal"},
+    {x: 1500, y: 250, width: 32, path: 300, speed: 300, direction: "horizontal", startDirection: -1},
     ],
 
      moving: [
@@ -404,7 +404,8 @@ var SceneSeven = {
     ],
 
     saw: [
-    {x: 600, y: 250, width: 32, path: 250, speed: 200, direction: "horizontal"},
+    {x: 500, y: 250, width: 32, path: 350, speed: 200, direction: "horizontal"},
+    {x: 700, y: 250, width: 32, path: 350, speed: 200, direction: "horizontal", startDirection: -1},
     ],
 
     falling: [
@@ -497,11 +498,11 @@ var SceneEight = {
      ],
 
      saw: [
-    {x: 400, y: 500, width: 32, path: 2400, speed: 500, direction: "horizontal"},
+    {x: 400, y: 500, width: 32, path: 2400, speed: 400, direction: "horizontal"},
     {x: 400, y: 500, width: 32, path: 400, speed: 250, direction: "horizontal"},
-    {x: 1000, y: 500, width: 32, path: 400, speed: 250, direction: "horizontal"},
-    {x: 1500, y: 500, width: 32, path: 400, speed: 250, direction: "horizontal"},
-    {x: 2000, y: 500, width: 32, path: 400, speed: 250, direction: "horizontal"},
+    {x: 1000, y: 500, width: 32, path: 400, speed: 250, direction: "horizontal", startDirection: -1},
+    {x: 1800, y: 500, width: 32, path: 500, speed: 250, direction: "horizontal", startDirection: -1},
+    {x: 400, y: 500, width: 32, path: 2400, speed: 400, direction: "horizontal", startDirection: -1},
     ],
 
     parallax: [{dimension: 0, file: "sprites/levels/screen_8_past.png"},
@@ -693,6 +694,11 @@ var SceneTen = {
         {dimension: 0, x: 1952, y: 350, width: 128, height: 32, delay: .5},
         {dimension: 0, x: 2338, y: 350, width: 128, height: 32, delay: .5},
         {dimension: 1, x: 1376, y: 544, width: 128, height: 32, delay: .5},
+    ],
+
+    saw: [
+    {x: 1250, y: 50, width: 32, path: 600, speed: 400, direction: "verticle"},
+    {x: 1650, y: 50, width: 32, path: 600, speed: 400, direction: "verticle", startDirection: -1},
     ],
 
     parallax: [{dimension: 0, file: "sprites/levels/screen_10_past.png"},
