@@ -55,10 +55,12 @@ class Player {
         4,
         0.05,
       ),
-      // TODO: Add death animation here?
     };
     this.animator = this.animations.idle;
 
+          this.landAnimator =  new Animator(ASSET_MANAGER.getAsset("sprites/land.png"), 0,0, 24, 16, 8, 0.05),
+      this.deathAnimator = new Animator(ASSET_MANAGER.getAsset("sprites/death.png"), 0, 0, 64,64, 12, 0.05),
+      this.dashAnimator = new Animator(ASSET_MANAGER.getAsset("sprites/dash.png"), 0,0, 32,32, 9, 0.03),
     // constants
     this.config = {
       gravity: 1500, //acceleration downward
@@ -86,7 +88,6 @@ class Player {
 
     // Death animation state
     this.deathTimer = 0;
-    this.deathAnimationDuration = 2.0; // seconds for full death animation
 
     // Jump helpers
     this.coyoteTime = 0;
@@ -114,6 +115,16 @@ class Player {
     this.updateBB();
     //sound help
     this.runningSound = null;
+    //effect states
+    this.showExplosion = false;
+    this.explosionTimer = 0;
+    this.explosionDuration = this.deathAnimator.frameCount * this.deathAnimator.frameDuration;
+
+// Land effect
+this.showLand = false;
+this.landTimer = 0;
+this.landDuration = this.landAnimator.frameCount * this.landAnimator.frameDuration;
+this.wasOnGround = false;
   }
 
   updateBB() {
@@ -152,6 +163,7 @@ class Player {
     this.y += this.velocity.y * TICK;
     this.updateBB();
     this.onGround = false;
+    const velocityBeforeLanding = this.velocity.y;
     this.#handleCollisions("y", TICK);
 
     if (
@@ -163,7 +175,29 @@ class Player {
     } else {
       this.#stopRunSound();
     } //moved running sound outside of input, to handle all cases.
+// Land effect — trigger once when player touches ground
+const justLanded = this.onGround && !this.wasOnGround && velocityBeforeLanding > 100;
 
+if (justLanded) {
+    this.showLand = true;
+    this.landTimer = 0;
+    this.landAnimator.elapsedTime = 0; // reset so it plays from frame 1
+}
+if (this.showLand) {
+    this.landTimer += TICK;
+    if (this.landTimer >= this.landDuration) {
+        this.showLand = false;
+    }
+}
+this.wasOnGround = this.onGround;
+
+// Explosion timer
+if (this.showExplosion) {
+    this.explosionTimer += TICK;
+    if (this.explosionTimer >= this.explosionDuration) {
+        this.showExplosion = false;
+    }
+}
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
       this.respawn();
@@ -179,6 +213,11 @@ class Player {
 
   respawn() {
     if (!this.game.isPast) this.game.changeTime();
+this.showExplosion = true;
+this.explosionTimer = 0;
+this.deathAnimator.elapsedTime = 0; // reset so it plays from frame 1
+this.explosionX = this.x;
+this.explosionY = this.y;
     this.x = this.spawnX;
     this.y = this.spawnY;
     this.velocity = { x: 0, y: 0 };
@@ -201,6 +240,9 @@ this.game.getPresentList().forEach(function (entity) {
     if (entity instanceof MovingPlatform) entity.reset();
     if (entity instanceof SawBlade) entity.reset();
 });
+
+this.showExplosion = true;
+this.explosionTimer = 0;
     this.#stopRunSound();
     this.game.sound.play("death", { volume: 0.8 });
     this.jumpBuffer = 0;
@@ -541,9 +583,30 @@ this.game.getPresentList().forEach(function (entity) {
   }
 
   draw(ctx) {
-    const flip = this.facing === "left"; //changes animation direction
+    const flip = this.facing === "left";
     this.animator.drawFrame(this.game.clockTick, ctx, this.x, this.y, flip);
-    // ctx.strokeRect(this.x, this.y, this.width * 4, this.height * 4);
-    // this.BB.draw(ctx);
-  }
+
+    // Dash effect — behind player, scale 3
+    if (this.dashTime > 0) {
+        const dashOffsetX = this.facing === "right" ? -this.dashAnimator.width * 2.8 : this.dashAnimator.width * 2.8;
+        const dashX = this.x + (this.width * 4) / 2 - this.dashAnimator.width * 1.5 + dashOffsetX;
+        const dashY = this.y + (this.height * 4) / 2 - this.dashAnimator.height * 1.5;
+        this.dashAnimator.drawFrame(this.game.clockTick, ctx, dashX, dashY, flip, 3);
+    }
+
+    // Land puff — plays once on landing, not while running
+    if (this.showLand) {
+      const landOffsetY = 28;
+        const landX = this.x + (this.width * 4) / 2 - this.landAnimator.width * 2;
+        const landY = this.y + this.height * 4 - this.landAnimator.height * 2 - landOffsetY;
+        this.landAnimator.drawFrame(this.game.clockTick, ctx, landX, landY, flip, 4);
+    }
+
+    // Death explosion — plays once at captured death position
+    if (this.showExplosion) {
+        const deathX = this.explosionX + (this.width * 4) / 2 - this.deathAnimator.width * 2;
+        const deathY = this.explosionY + (this.height * 4) / 2 - this.deathAnimator.height * 2;
+        this.deathAnimator.drawFrame(this.game.clockTick, ctx, deathX, deathY, false, 3.5);
+    }
+}
 }
