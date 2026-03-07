@@ -332,6 +332,7 @@ class Player {
     const fromRight = this.lastBB.left >= entity.BB.right - 5;
 
     if (entity instanceof invisible_collision) {
+      if (!fromLeft && !fromRight) return;
       //fixes moving platform not making player collide with regular collision
       const playerCenterX = this.x + (this.width * 4) / 2;
       const entityCenterX = entity.x + entity.width / 2;
