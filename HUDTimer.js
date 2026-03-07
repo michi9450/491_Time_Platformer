@@ -31,6 +31,7 @@ class HUDTimer {
     // Called by SceneManager when the player hits a level transition.
     // Returns true if this was the last level (game complete).
     onLevelComplete(levelNumber) {
+        if (this.gameComplete) return true; // Already done, ignore repeated calls
         const levelTime = this.totalTime - this.levelStartTime;
         this.levelTimes.push({ level: levelNumber, time: levelTime });
 

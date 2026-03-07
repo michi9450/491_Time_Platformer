@@ -123,6 +123,15 @@ class Player {
   update() {
     const TICK = this.game.clockTick;
 
+    // Freeze player when game is complete
+    if (this.game.hudTimer && this.game.hudTimer.gameComplete) {
+      this.velocity = { x: 0, y: 0 };
+      this.state = "idle";
+      this.#stopRunSound();
+      this.#updateAnimation();
+      return;
+    }
+
     // Handle death animation state
     if (this.dead) {
       this.updateDeathAnimation(TICK);
