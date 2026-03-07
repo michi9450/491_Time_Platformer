@@ -149,7 +149,19 @@ class SceneManager {
             }
         }
 
-        if(this.screen.saw) {//saws exist in both dimensions
+        if(this.screen.laser) {
+            for (var i = 0; i < this.screen.laser.length; i++) {
+                var ent = this.screen.laser[i];
+                if(ent.dimension == 0) {// adds the jumppad for something in the past.
+                    this.game.addEntityPast(new LaserBeam(this.game, ent.x, ent.y, ent.direction));
+                }
+                else { //adds the jumppad for something in the present.
+                    this.game.addEntityPresent(new LaserBeam(this.game, ent.x, ent.y, ent.direction));
+                }
+            }
+        }
+
+        if(this.screen.saw) {
             for (var i = 0; i < this.screen.saw.length; i++) {
                 var ent = this.screen.saw[i];
                 var saw = new SawBlade(this.game, ent.x, ent.y, ent.width, ent.path, ent.speed, ent.direction)
