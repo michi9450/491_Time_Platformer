@@ -132,6 +132,7 @@ class Player {
 
     //leveltransition timer
     this.levelTransitionDelay = 0;
+    this.dimensionSwitchTimer = 0.1;
 
     //bounding box
     this.bbPadX = 10;
@@ -418,13 +419,12 @@ class Player {
   #updateAnimation() {
     if (this.dead) return;
     if (this.dashTime > 0) this.animator = this.animations.dash;
-    else if (!this.onGround && !this.ridingPlatform)
-      this.animator =
-        this.velocity.y < 0 ? this.animations.jump : this.animations.fall;
+    else if (!this.onGround && !this.ridingPlatform && this.dimensionSwitchTimer <= 0)
+        this.animator = this.velocity.y < 0 ? this.animations.jump : this.animations.fall;
     else if (Math.abs(this.velocity.x) > 10)
-      this.animator = this.animations.run;
+        this.animator = this.animations.run;
     else this.animator = this.animations.idle;
-  }
+}
   #applyFriction(amount, TICK) {
     if (this.velocity.x > 0)
       this.velocity.x = Math.max(0, this.velocity.x - amount * TICK);
@@ -442,6 +442,7 @@ class Player {
     //timers
     this.coyoteTime -= TICK;
     this.jumpBuffer -= TICK;
+    this.dimensionSwitchTimer -= TICK;
 
     // Dash
     const dashJustPressed = dashPressed && !this.wasDashPressed;
@@ -614,6 +615,7 @@ class Player {
 
     // Update bounding box after position change
     that.updateBB();
+    this.dimensionSwitchTimer = 0.15;
 
     // Zero out velocity to prevent immediate movement after push
     // that.velocity.x = 0;
