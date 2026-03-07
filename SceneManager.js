@@ -142,10 +142,10 @@ class SceneManager {
             for (var i = 0; i < this.screen.jumppad.length; i++) {
                 var ent = this.screen.jumppad[i];
                 if(ent.dimension == 0) {// adds the jumppad for something in the past.
-                    this.game.addEntityPast(new JumpPad(this.game, ent.x, ent.y));
+                    this.game.addEntityPast(new JumpPad(this.game, ent.x, ent.y, ent.width, ent.height, ent.boost));
                 }
                 else { //adds the jumppad for something in the present.
-                    this.game.addEntityPresent(new JumpPad(this.game, ent.x, ent.y));
+                    this.game.addEntityPresent(new JumpPad(this.game, ent.x, ent.y, ent.width, ent.height, ent.boost));
                 }
             }
         }

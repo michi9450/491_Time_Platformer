@@ -631,8 +631,8 @@ var SceneTen = {
 ],
 
     jumppad: [
-    {dimension: 1, x: 1958, y: 596},
-    {dimension: 1, x: 742, y: 662}
+    {dimension: 1, x: 1958, y: 596, boost: 1200},
+    {dimension: 1, x: 742, y: 662, boost: 1200}
     ],
 
     laser: [
