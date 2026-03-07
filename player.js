@@ -206,7 +206,7 @@ class Player {
     const velocityBeforeLanding = this.velocity.y;
     this.#handleCollisions("y", TICK);
 
-    if (
+    if (!this.isTransitioning &&
       this.onGround &&
       (this.game.keys["KeyA"] || this.game.keys["KeyD"]) &&
       Math.abs(this.velocity.x) > 10
@@ -320,6 +320,7 @@ class Player {
       this.levelTransitionDelay > this.config.levelTransitionDelay
     ) {
       this.levelTransitionDelay = 0;
+      this.isTransitioning = true;
       this.#stopRunSound();
       entity.SM.loadnewLevel(entity.getlevel());
     }
