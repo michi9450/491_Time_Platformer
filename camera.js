@@ -13,7 +13,7 @@ class Camera {
 
     // temporary before we get level objects going
     this.worldWidth = 3200;
-    this.worldHeight = 900;
+    this.worldHeight = 950;
 
     this.smoothingFactor = 0.1;
     

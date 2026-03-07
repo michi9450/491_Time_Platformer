@@ -73,7 +73,7 @@ class Player {
       dashSpeed: 900, //horizontal dash speed
       dashDuration: 0.2, // how long the dash lasts in seconds
       timeJumpDuration: 0.2, // how long before the player can time jump again
-      levelTransitionDelay: .5 //how long it waits before checking level transition
+      levelTransitionDelay: 0.5, //how long it waits before checking level transition
     };
     // Physics
     this.velocity = { x: 0, y: 0 };
@@ -129,8 +129,14 @@ class Player {
       return; // Skip normal update while dead
     }
 
+    if (this.ridingPlatform) {
+      this.x += this.ridingPlatform.velX * TICK;
+      this.y += this.ridingPlatform.velY * TICK;
+      this.updateBB();
+    }
+    this.ridingPlatform = null;
     this.#handleInput(TICK);
-    this.velocity.x 
+    this.velocity.x;
     this.x += this.velocity.x * TICK;
     this.updateBB();
 
@@ -140,6 +146,16 @@ class Player {
     this.updateBB();
     this.onGround = false;
     this.#handleCollisions("y", TICK);
+
+    if (
+      this.onGround &&
+      (this.game.keys["KeyA"] || this.game.keys["KeyD"]) &&
+      Math.abs(this.velocity.x) > 10
+    ) {
+      this.#startRunSound();
+    } else {
+      this.#stopRunSound();
+    } //moved running sound outside of input, to handle all cases.
 
     // Check if player fell off the map (below screen)
     if (this.y > 1000) {
@@ -167,19 +183,19 @@ class Player {
     this.canDash = true;
     this.coyoteTime = 0;
 
-    // Reset all falling platforms
+    // Reset all objects platforms
     this.game.getPastList().forEach(function (entity) {
-      if (entity instanceof FallingPlatform) {
-        entity.reset();
-      }
-    });
-    this.game.getPresentList().forEach(function (entity) {
-      if (entity instanceof FallingPlatform) {
-        entity.reset();
-      }
-    });
+    if (entity instanceof FallingPlatform) entity.reset();
+    if (entity instanceof MovingPlatform) entity.reset();
+    if (entity instanceof SawBlade) entity.reset();
+});
+this.game.getPresentList().forEach(function (entity) {
+    if (entity instanceof FallingPlatform) entity.reset();
+    if (entity instanceof MovingPlatform) entity.reset();
+    if (entity instanceof SawBlade) entity.reset();
+});
     this.#stopRunSound();
-    this.game.sound.play("death", {volume: 0.8});
+    this.game.sound.play("death", { volume: 0.8 });
     this.jumpBuffer = 0;
     this.updateBB();
   }
@@ -207,7 +223,10 @@ class Player {
 
   #handleLevelTransition(entity, TICK) {
     this.levelTransitionDelay += TICK;
-    if (entity.isLevelTransition && this.levelTransitionDelay > this.config.levelTransitionDelay) {
+    if (
+      entity.isLevelTransition &&
+      this.levelTransitionDelay > this.config.levelTransitionDelay
+    ) {
       this.levelTransitionDelay = 0;
       this.#stopRunSound();
       entity.SM.loadnewLevel(entity.getlevel());
@@ -220,19 +239,35 @@ class Player {
     const fromLeft = this.lastBB.right <= entity.BB.left + 5;
     const fromRight = this.lastBB.left >= entity.BB.right - 5;
 
-    if (fromLeft && this.velocity.x > 0) {
-      this.x = entity.BB.left - this.width * 4;
+    if (entity instanceof invisible_collision) {
+      //fixes moving platform not making player collide with regular collision
+      const playerCenterX = this.x + (this.width * 4) / 2;
+      const entityCenterX = entity.x + entity.width / 2;
+      if (playerCenterX < entityCenterX) {
+        this.x = entity.BB.left - this.width * 4;
+      } else {
+        this.x = entity.BB.right;
+      }
       this.velocity.x = 0;
-    } else if (fromRight && this.velocity.x < 0) {
-      this.x = entity.BB.right;
-      this.velocity.x = 0;
+    } else {
+      if (fromLeft && this.velocity.x > 0) {
+        this.x = entity.BB.left - this.width * 4;
+        this.velocity.x = 0;
+      } else if (fromRight && this.velocity.x < 0) {
+        this.x = entity.BB.right;
+        this.velocity.x = 0;
+      }
     }
   }
   #handleVerticalCollisions(entity) {
     if (!entity.isPlatform) return;
 
     // landing
-    if (this.velocity.y > 0 && this.lastBB.bottom <= entity.BB.top + 10) {
+    const landingThreshold = entity instanceof MovingPlatform ? 40 : 10;
+    if (
+      this.velocity.y >= 0 &&
+      this.lastBB.bottom <= entity.BB.top + landingThreshold
+    ) {
       this.y = entity.BB.top - this.height * 4;
       this.velocity.y = 0;
       this.onGround = true;
@@ -242,9 +277,8 @@ class Player {
 
       if (entity instanceof FallingPlatform) entity.activate();
 
-      if (entity instanceof MovingPlatform && entity.lastX !== undefined) {
-        this.x += entity.x - entity.lastX;
-        this.y += entity.y - entity.lastY;
+      if (entity instanceof MovingPlatform) {
+        this.ridingPlatform = entity;
       }
     }
 
@@ -278,14 +312,14 @@ class Player {
       this.y = entity.BB.top - this.height * 4;
       this.velocity.y = -entity.boost;
       this.fromJumpPad = true;
+      this.ridingPlatform = null;
 
       this.onGround = false;
       this.coyoteTime = 0;
       this.hasDoubleJump = true;
       this.canDash = true;
 
-      this.game.sound.play("jumppad", { pitchVar: 0.2,volume: .3 });
-
+      this.game.sound.play("jumppad", { pitchVar: 0.2, volume: 0.3 });
       entity.bounce();
     }
   }
@@ -331,7 +365,7 @@ class Player {
       this.canDash = false;
       this.dashTime = this.config.dashDuration;
       this.velocity.y = 0;
-      this.game.sound.play("dash", { pitchVar: 0.05,volume: .3 });
+      this.game.sound.play("dash", { pitchVar: 0.05, volume: 0.3 });
 
       if (this.facing === "right") {
         this.velocity.x = this.config.dashSpeed;
@@ -346,17 +380,15 @@ class Player {
         //both clicked and on the floor
         this.#applyFriction(this.config.runDecel, TICK);
       } else if (left) {
-    this.velocity.x -= this.config.runAccel * TICK;
-    this.facing = "left";
-    this.#startRunSound();
-} else if (right) {
-    this.velocity.x += this.config.runAccel * TICK;
-    this.facing = "right";
-    this.#startRunSound();
-} else {
-    this.#stopRunSound();
-    this.#applyFriction(this.config.runDecel, TICK);
-}
+        this.velocity.x -= this.config.runAccel * TICK;
+        this.facing = "left";
+      } else if (right) {
+        this.velocity.x += this.config.runAccel * TICK;
+        this.facing = "right";
+      } else {
+        this.#stopRunSound();
+        this.#applyFriction(this.config.runDecel, TICK);
+      }
 
       this.velocity.x = Math.max(
         -this.config.maxRun,
@@ -374,13 +406,15 @@ class Player {
           this.velocity.y = -this.config.jumpSpeed;
           this.jumpBuffer = 0;
           this.onGround = false;
-          this.game.sound.play("jump", { pitchVar: 0.05, volume: .3 });
+          this.ridingPlatform = null;
+          this.game.sound.play("jump", { pitchVar: 0.05, volume: 0.3 });
           this.#stopRunSound();
         } else if (this.hasDoubleJump) {
           this.velocity.y = -this.config.jumpSpeed;
           this.hasDoubleJump = false;
           this.jumpBuffer = 0;
-          this.game.sound.play("jump", { pitchVar: 0.05,volume: .3 });
+          this.ridingPlatform = null;
+          this.game.sound.play("jump", { pitchVar: 0.05, volume: 0.3 });
         }
       }
 
@@ -407,83 +441,97 @@ class Player {
       }
 
       //Gravity
-      this.velocity.y += this.config.gravity * TICK;
-      this.velocity.y = Math.min(this.velocity.y, this.config.maxFall);
+      if (
+        this.ridingPlatform &&
+        this.ridingPlatform.velY > 0 &&
+        this.onGround
+      ) {
+        this.velocity.y = this.ridingPlatform.velY;
+      } else {
+        this.velocity.y += this.config.gravity * TICK;
+        this.velocity.y = Math.min(this.velocity.y, this.config.maxFall);
+      }
       if (this.velocity.y >= 0) this.fromJumpPad = false;
       if (this.velocity.y > 0 && this.coyoteTime > 0) this.onGround = false;
     }
   }
   #startRunSound() {
     if (this.runningSoundHandle || !this.onGround) return; // already playing or in air
-    this.runningSoundHandle = this.game.sound.play("run", { loop: true, volume: 0.4 });
-}
+    this.runningSoundHandle = this.game.sound.play("run", {
+      loop: true,
+      volume: 0.2,
+    });
+  }
 
-#stopRunSound() {
+  #stopRunSound() {
     if (!this.runningSoundHandle) return;
     this.runningSoundHandle.stop(0.05); // tiny fade out so it doesn't click
     this.runningSoundHandle = null;
-}
+  }
 
-    checkDimensionCollision() {//add threshold for how far into an object you need to be before it pushes you
-        const that = this;
-        let overlappingWalls = [];
+  checkDimensionCollision() {
+    //add threshold for how far into an object you need to be before it pushes you
+    const that = this;
+    let overlappingWalls = [];
 
-        // Find all overlapping walls in current dimension
-        this.game.getEntityList().forEach(function (entity) {
-            if (entity instanceof invisible_collision &&
-                that.BB.collide(entity.BB)) {
-                overlappingWalls.push(entity);
-            }
-        });
+    // Find all overlapping walls in current dimension
+    this.game.getEntityList().forEach(function (entity) {
+      if (entity instanceof invisible_collision && that.BB.collide(entity.BB)) {
+        overlappingWalls.push(entity);
+      }
+    });
 
-        if (overlappingWalls.length === 0) return;
+    if (overlappingWalls.length === 0) return;
 
-        // Find nearest wall if multiple overlaps
-        let nearestWall = overlappingWalls[0];
-        let minOverlap = Infinity;
+    // Find nearest wall if multiple overlaps
+    let nearestWall = overlappingWalls[0];
+    let minOverlap = Infinity;
 
-        overlappingWalls.forEach(function(wall) {
-            let overlap = that.BB.overlap(wall.BB);
-            let totalOverlap = Math.abs(overlap.x) + Math.abs(overlap.y);
-            if (totalOverlap < minOverlap) {
-                minOverlap = totalOverlap;
-                nearestWall = wall;
-            }
-        });
+    overlappingWalls.forEach(function (wall) {
+      let overlap = that.BB.overlap(wall.BB);
+      let totalOverlap = Math.abs(overlap.x) + Math.abs(overlap.y);
+      if (totalOverlap < minOverlap) {
+        minOverlap = totalOverlap;
+        nearestWall = wall;
+      }
+    });
 
-        // Calculate which side to push to
-        let overlap = that.BB.overlap(nearestWall.BB);
-        let playerCenter = that.x + (that.width * 4) / 2;
-        let wallCenter = nearestWall.x + nearestWall.width / 2;
+    // Calculate which side to push to
+    let overlap = that.BB.overlap(nearestWall.BB);
+    let playerCenter = that.x + (that.width * 4) / 2;
+    let wallCenter = nearestWall.x + nearestWall.width / 2;
 
-        // Push to nearest edge based on overlap amount
-        if (Math.abs(overlap.x) < Math.abs(overlap.y)) {
-            // Horizontal push (less overlap = easier to push out)
-            if (playerCenter < wallCenter) {
-                // Push left
-                that.x = nearestWall.BB.left - (that.width * 4);
-            } else {
-                // Push right
-                that.x = nearestWall.BB.right;
-            }
-        } else {
-            // Vertical push (if more vertically overlapped)
-            if (that.y + (that.height * 4) / 2 < nearestWall.y + nearestWall.height / 2) {
-                // Push up
-                that.y = nearestWall.BB.top - (that.height * 4);
-            } else {
-                // Push down
-                that.y = nearestWall.BB.bottom;
-            }
-        }
-
-        // Update bounding box after position change
-        that.updateBB();
-
-        // Zero out velocity to prevent immediate movement after push
-        // that.velocity.x = 0;
-        // that.velocity.y = 0;
+    // Push to nearest edge based on overlap amount
+    if (Math.abs(overlap.x) < Math.abs(overlap.y)) {
+      // Horizontal push (less overlap = easier to push out)
+      if (playerCenter < wallCenter) {
+        // Push left
+        that.x = nearestWall.BB.left - that.width * 4;
+      } else {
+        // Push right
+        that.x = nearestWall.BB.right;
+      }
+    } else {
+      // Vertical push (if more vertically overlapped)
+      if (
+        that.y + (that.height * 4) / 2 <
+        nearestWall.y + nearestWall.height / 2
+      ) {
+        // Push up
+        that.y = nearestWall.BB.top - that.height * 4;
+      } else {
+        // Push down
+        that.y = nearestWall.BB.bottom;
+      }
     }
+
+    // Update bounding box after position change
+    that.updateBB();
+
+    // Zero out velocity to prevent immediate movement after push
+    // that.velocity.x = 0;
+    // that.velocity.y = 0;
+  }
 
   draw(ctx) {
     const flip = this.facing === "left"; //changes animation direction
